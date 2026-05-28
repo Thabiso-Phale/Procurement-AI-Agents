@@ -1,0 +1,5 @@
+node_modules/
+*.bat
+*.pdf
+HOW_TO_USE.md
+.env
