@@ -2540,7 +2540,7 @@ textarea.form-input{resize:vertical;min-height:80px}
             <button class="btn btn-outline btn-sm" onclick="toggleKeyVisibility()" id="key-toggle-btn" title="Show/hide key">👁</button>
             <button class="btn btn-blue btn-sm" onclick="testAPIConnection()" id="test-api-btn">Test Connection</button>
           </div>
-          <div class="form-hint">Get your key at <strong>console.anthropic.com</strong> → API Keys → Create Key. Paste it above and save.</div>
+          <div class="form-hint">Get your free key at <a href="https://platform.anthropic.com/api-keys" target="_blank" rel="noopener" style="color:#1D4ED8;font-weight:700">platform.anthropic.com/api-keys</a> → Create Key → paste above and save. New accounts include free credits.</div>
           <div id="api-key-status" style="display:none;margin-top:8px;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:600"></div>
         </div>
         <div class="btn-row">
@@ -6397,7 +6397,18 @@ window.onload=function(){
           <div style="font-size:12px;color:#64748B;line-height:1.5">Remove all sample data. You'll start with an empty system and add your own real suppliers, orders and invoices from day one.</div>
         </div>
       </div>
-      <div style="display:flex;gap:10px;margin-top:8px">
+      <!-- AI key notice -->
+      <div style="margin-top:16px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
+        <span style="font-size:20px;flex-shrink:0">🤖</span>
+        <div style="font-size:12px;color:#1E40AF;line-height:1.7">
+          <strong>Activating the AI Assistant (takes 2 minutes)</strong><br>
+          ProcureAI's AI features run on Claude by Anthropic. To enable them, you'll need a free Anthropic API key.<br>
+          <strong>After you finish setup:</strong> go to <strong>Settings → API Key</strong>, paste your key, and save.<br>
+          <a href="https://platform.anthropic.com/api-keys" target="_blank" rel="noopener" style="color:#1D4ED8;font-weight:700">Get your free key at platform.anthropic.com →</a><br>
+          <span style="color:#64748B">New accounts include free credits. The rest of the app works fully without it.</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px">
         <button class="btn btn-outline" style="padding:10px 18px" onclick="wizardBack(3)">← Back</button>
         <button class="btn btn-primary" style="flex:1;padding:12px" onclick="wizardFinish()">✓ Get Started →</button>
       </div>
