@@ -3646,8 +3646,7 @@ function renderRiskWatch(){
 
 // ── AI Risk Assessment (Claude) ───────────────────────────
 function aiRiskAssessment(){
-  var key=appSettings.anthropicKey;
-  if(!key){toast('⚙️ Add your Claude API key in Settings to enable AI risk assessment.');return;}
+  var key=appSettings.anthropicKey||'';
 
   var btn=document.querySelector('#view-risk-watch .btn-blue');
   if(btn){btn.textContent='🤖 Thinking…';btn.disabled=true;}
@@ -3817,8 +3816,9 @@ function showView(id){
     var live=document.getElementById('ai-live-badge');
     var demo=document.getElementById('ai-demo-badge');
     if(live&&demo){
-      if(appSettings.anthropicKey){live.style.display='block';demo.style.display='none';}
-      else{live.style.display='none';demo.style.display='block';}
+      // Always show live — hosted key available for all beta users
+      live.style.display='block';
+      demo.style.display='none';
     }
   }
   if(id==='create-invoice'){
@@ -4373,16 +4373,6 @@ function sendChat(){
   input.value='';
   container.scrollTop=container.scrollHeight;
 
-  // No API key — fall back to simulated responses
-  if(!appSettings.anthropicKey){
-    setTimeout(function(){
-      var resp=getAIResponse(msg);
-      container.innerHTML+='<div class="msg msg-ai">🤖 '+resp+'<br><br><span style="font-size:11px;color:#94A3B8">💡 Add your Claude API key in Settings to enable real AI answers.</span></div>';
-      container.scrollTop=container.scrollHeight;
-    },600);
-    return;
-  }
-
   // Show typing indicator
   var typingId='typing-'+Date.now();
   container.innerHTML+='<div class="msg msg-ai" id="'+typingId+'"><span style="color:#94A3B8;font-style:italic">🤖 Thinking...</span></div>';
@@ -4392,7 +4382,7 @@ function sendChat(){
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      apiKey:appSettings.anthropicKey,
+      apiKey:appSettings.anthropicKey||'',
       payload:{
         model:'claude-haiku-4-5',
         max_tokens:1024,
@@ -5798,7 +5788,6 @@ function detectPriceDrift(){
 }
 
 function scoutSuppliers(){
-  if(!appSettings.anthropicKey){toast('⚠ Add your Claude API key in Settings to use the Supplier Scout.');return;}
   var query=(document.getElementById('scout-query')||{}).value;
   if(!query||!query.trim()){toast('Please describe the type of supplier you need.');return;}
   query=query.trim();
@@ -5821,7 +5810,7 @@ function scoutSuppliers(){
     +'Use clean HTML: <strong> for names, <ul><li> for bullets. Max 280 words. No preamble — start with the first supplier.';
 
   fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({apiKey:appSettings.anthropicKey,payload:{model:'claude-haiku-4-5',max_tokens:700,
+    body:JSON.stringify({apiKey:appSettings.anthropicKey||'',payload:{model:'claude-haiku-4-5',max_tokens:700,
       messages:[{role:'user',content:prompt}]}})})
   .then(function(r){return r.json();})
   .then(function(data){
@@ -5951,10 +5940,6 @@ function getEscalatedPOs(){
 // AGENT 7 — DOCUMENT READER (The Paperwork Eliminator)
 // ============================================================
 function triggerInvoiceScan(){
-  if(!appSettings.anthropicKey){
-    toast('⚠ Add your Claude API key in Settings to use invoice scanning.');
-    return;
-  }
   document.getElementById('invoice-scan-input').click();
 }
 
@@ -5997,7 +5982,7 @@ function onInvoiceScanFileSelected(input){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        apiKey:appSettings.anthropicKey,
+        apiKey:appSettings.anthropicKey||'',
         payload:{
           model:'claude-haiku-4-5',
           max_tokens:512,
@@ -6398,14 +6383,14 @@ window.onload=function(){
         </div>
       </div>
       <!-- AI key notice -->
-      <div style="margin-top:16px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
+      <div style="margin-top:16px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
         <span style="font-size:20px;flex-shrink:0">🤖</span>
-        <div style="font-size:12px;color:#1E40AF;line-height:1.7">
-          <strong>Activating the AI Assistant (takes 2 minutes)</strong><br>
-          ProcureAI's AI features run on Claude by Anthropic. To enable them, you'll need a free Anthropic API key.<br>
-          <strong>After you finish setup:</strong> go to <strong>Settings → API Key</strong>, paste your key, and save.<br>
-          <a href="https://platform.anthropic.com/api-keys" target="_blank" rel="noopener" style="color:#1D4ED8;font-weight:700">Get your free key at platform.anthropic.com →</a><br>
-          <span style="color:#64748B">New accounts include free credits. The rest of the app works fully without it.</span>
+        <div style="font-size:12px;color:#166534;line-height:1.7">
+          <strong>AI features are ready to use — no setup needed!</strong><br>
+          ProcureAI's AI assistant is powered by Claude and works out of the box during beta.<br>
+          <strong>Want unlimited AI access?</strong> Add your own free Anthropic API key in <strong>Settings → API Key</strong>.<br>
+          <a href="https://platform.anthropic.com/api-keys" target="_blank" rel="noopener" style="color:#15803D;font-weight:700">Get a free key at platform.anthropic.com →</a><br>
+          <span style="color:#4B5563">New accounts include free credits. Your key bypasses daily limits.</span>
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:14px">

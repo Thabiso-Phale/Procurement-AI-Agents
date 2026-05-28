@@ -20,6 +20,30 @@ const MIME = {
   '.ico':  'image/x-icon'
 };
 
+// ── Beta rate limiter (applies only when using the hosted key) ──
+// 30 AI requests per IP per 24 hours — enough for thorough beta testing.
+var rateLimits  = {};
+var RATE_LIMIT  = 30;
+var RATE_WINDOW = 24 * 60 * 60 * 1000; // 24 h in ms
+
+function checkRateLimit(ip) {
+  var now = Date.now();
+  if (!rateLimits[ip] || now > rateLimits[ip].resetAt) {
+    rateLimits[ip] = { count: 0, resetAt: now + RATE_WINDOW };
+  }
+  if (rateLimits[ip].count >= RATE_LIMIT) return false;
+  rateLimits[ip].count++;
+  return true;
+}
+
+// Purge stale entries hourly to keep memory clean
+setInterval(function() {
+  var now = Date.now();
+  Object.keys(rateLimits).forEach(function(ip) {
+    if (now > rateLimits[ip].resetAt) delete rateLimits[ip];
+  });
+}, 60 * 60 * 1000);
+
 const server = http.createServer(function(req, res) {
 
   // ── CORS headers for all responses ──────────────────────────
@@ -40,24 +64,39 @@ const server = http.createServer(function(req, res) {
         return;
       }
 
-      var apiKey  = parsed.apiKey  || '';
-      var payload = parsed.payload || {};
+      var userKey   = (parsed.apiKey || '').trim();
+      var hostedKey = (process.env.ANTHROPIC_API_KEY || '').trim();
+      var usingHosted = !userKey && !!hostedKey;
+      var apiKey    = userKey || hostedKey;
 
       if (!apiKey) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: { message: 'No API key provided.' } }));
+        res.end(JSON.stringify({ error: { message: 'No API key available. Add your Anthropic key in Settings to continue.' } }));
         return;
       }
 
+      // Rate-limit only requests that use the hosted beta key
+      if (usingHosted) {
+        var clientIP = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown')
+                         .split(',')[0].trim();
+        if (!checkRateLimit(clientIP)) {
+          res.writeHead(429, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: { message: 'Daily AI limit reached (30 requests/day on beta access). Add your own free API key in Settings for unlimited use.' } }));
+          return;
+        }
+        console.log('  [beta key] ' + clientIP + ' — request ' + rateLimits[clientIP].count + '/' + RATE_LIMIT);
+      }
+
+      var payload = parsed.payload || {};
       var bodyStr = JSON.stringify(payload);
       var options = {
         hostname: 'api.anthropic.com',
         path:     '/v1/messages',
         method:   'POST',
         headers:  {
-          'Content-Type':    'application/json',
-          'Content-Length':  Buffer.byteLength(bodyStr),
-          'x-api-key':       apiKey,
+          'Content-Type':      'application/json',
+          'Content-Length':    Buffer.byteLength(bodyStr),
+          'x-api-key':         apiKey,
           'anthropic-version': '2023-06-01'
         }
       };
@@ -106,10 +145,12 @@ server.listen(PORT, '0.0.0.0', function() {
   console.log('   ProcureAI is running!');
   console.log('   http://localhost:' + PORT);
   console.log('   Claude AI proxy: active');
+  if (process.env.ANTHROPIC_API_KEY) {
+    console.log('   Beta hosted key: active (30 req/IP/day)');
+  } else {
+    console.log('   Beta hosted key: NOT SET (users need own key)');
+  }
   console.log('  ============================================');
-  console.log('');
-  console.log('  Keep this window open while using the app.');
-  console.log('  Close it when you are done.');
   console.log('');
   // Auto-open browser on Windows only (not used in cloud deployment)
   if (process.platform === 'win32') exec('start http://localhost:' + PORT);
