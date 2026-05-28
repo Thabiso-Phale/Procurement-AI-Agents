@@ -2681,7 +2681,7 @@ function generatePOPDF(id){
 
   var company=appSettings.companyName||'Your Company';
   var cur=p.currency||appSettings.currency||'USD';
-  var sym=cur==='GBP'?'£':cur==='EUR'?'€':cur==='SGD'?'S$':cur==='AUD'?'A$':cur==='CAD'?'CA$':'$';
+  var sym=getCurrencySymbol(cur);
   var taxRate=cur==='GBP'?20:cur==='EUR'?20:cur==='SGD'?9:cur==='AUD'?10:cur==='CAD'?5:10;
   var taxLabel=cur==='GBP'?'VAT':cur==='EUR'?'VAT':cur==='SGD'?'GST':cur==='AUD'?'GST':cur==='CAD'?'GST/HST':'Tax';
   var govLaw=cur==='GBP'?'England and Wales':cur==='EUR'?'the Republic of Ireland':cur==='SGD'?'Singapore':cur==='AUD'?'Victoria, Australia':cur==='CAD'?'the Province of Ontario, Canada':'the State of Delaware, USA';
@@ -3354,7 +3354,7 @@ function detectDistressSignals(){
     signals.push({
       p:'urgent',
       t:'<strong>Disputed invoice:</strong> '+i.supplier+' — <strong>'+i.id+'</strong> ('+
-        (appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$')+i.total.toLocaleString()+') is under dispute',
+        getCurrencySymbol(appSettings.currency)+i.total.toLocaleString()+') is under dispute',
       s:'Resolve the dispute before it damages the supplier relationship or triggers a late-payment penalty',
       v:'invoices',b:'Resolve →'
     });
@@ -3419,7 +3419,7 @@ function detectDistressSignals(){
   var drifts=detectPriceDrift();
   drifts.forEach(function(d){
     if(d.drift>=10){
-      var sym=appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$';
+      var sym=getCurrencySymbol(appSettings.currency);
       signals.push({
         p:'warning',
         t:'<strong>Significant price increase +'+d.drift+'%:</strong> '+d.supplier+' — latest '+sym+d.latest.toLocaleString()+' vs avg '+sym+d.avg.toLocaleString(),
@@ -3469,7 +3469,7 @@ function detectDistressSignals(){
 // ── Main render function ──────────────────────────────────
 function renderRiskWatch(){
   var today=new Date();today.setHours(0,0,0,0);
-  var sym=appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$';
+  var sym=getCurrencySymbol(appSettings.currency);
 
   // Build list of all unique suppliers
   var suppNames=[];
@@ -3651,7 +3651,7 @@ function aiRiskAssessment(){
   var btn=document.querySelector('#view-risk-watch .btn-blue');
   if(btn){btn.textContent='🤖 Thinking…';btn.disabled=true;}
 
-  var sym=appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$';
+  var sym=getCurrencySymbol(appSettings.currency);
 
   // Build context from live data
   var suppNames=[];
@@ -3910,7 +3910,7 @@ function renderPOTable(data){
   var rows=data||poData;
   if(currentPOFilter!=='all') rows=rows.filter(p=>p.status===currentPOFilter);
   // Update KPI cards from live data
-  var sym=appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$';
+  var sym=getCurrencySymbol(appSettings.currency);
   var kTotal=document.getElementById('po-kpi-total');
   var kPend=document.getElementById('po-kpi-pending');
   var kApp=document.getElementById('po-kpi-approved');
@@ -4427,7 +4427,7 @@ function renderCharts(){
 
 // ── Analytics: dynamic top-spend table ───────────────────
 function renderAnalyticsTables(){
-  var sym=appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$';
+  var sym=getCurrencySymbol(appSettings.currency);
   var tbody=document.getElementById('analytics-top-spend-tbody');
   if(!tbody) return;
   // Group spend by supplier (non-draft POs)
@@ -5140,7 +5140,7 @@ function daysDiff(dateStr){
 function renderInvoiceTable(data){
   var rows=data||invoiceData;
   var today=new Date();today.setHours(0,0,0,0);
-  var sym=appSettings.currency==='GBP'?'£':appSettings.currency==='EUR'?'€':'$';
+  var sym=getCurrencySymbol(appSettings.currency);
   var overdue=0,dueWeek=0,weekAmt=0,outstanding=0,paid=0;
   invoiceData.forEach(function(inv){
     var diff=daysDiff(inv.dueDate);
@@ -5590,6 +5590,93 @@ function saveContract(){
 // ============================================================
 // APP SETTINGS & LOCALSTORAGE
 // ============================================================
+// ── Currency helpers ─────────────────────────────────────────────
+var CURRENCY_SYMBOLS={
+  'USD':'$','GBP':'£','EUR':'€','AUD':'A$','CAD':'CA$','NZD':'NZ$','CHF':'Fr','SEK':'kr','NOK':'kr','DKK':'kr',
+  'SGD':'S$','HKD':'HK$','CNY':'¥','JPY':'¥','KRW':'₩','TWD':'NT$','THB':'฿','MYR':'RM','IDR':'Rp','PHP':'₱','VND':'₫',
+  'INR':'₹','PKR':'Rs','BDT':'৳','LKR':'Rs','NPR':'Rs',
+  'AED':'AED','SAR':'SAR','QAR':'QAR','KWD':'KWD','BHD':'BD','OMR':'OMR','ILS':'₪','TRY':'₺',
+  'ZAR':'R','NGN':'₦','KES':'KSh','GHS':'GH₵','EGP':'E£','MAD':'MAD','TZS':'TSh','UGX':'USh',
+  'ETB':'Br','RWF':'Fr','BWP':'P','MUR':'Rs','ZMW':'ZK','XOF':'Fr','XAF':'Fr',
+  'BRL':'R$','MXN':'MX$','CLP':'CLP','COP':'COP'
+};
+function getCurrencySymbol(cur){return CURRENCY_SYMBOLS[cur]||cur||'$';}
+
+var CURRENCY_OPTIONS=''
+  +'<optgroup label="── Americas ──">'
+  +'<option value="USD">🇺🇸 USD – US Dollar</option>'
+  +'<option value="CAD">🇨🇦 CAD – Canadian Dollar</option>'
+  +'<option value="MXN">🇲🇽 MXN – Mexican Peso</option>'
+  +'<option value="BRL">🇧🇷 BRL – Brazilian Real</option>'
+  +'<option value="CLP">🇨🇱 CLP – Chilean Peso</option>'
+  +'<option value="COP">🇨🇴 COP – Colombian Peso</option>'
+  +'</optgroup>'
+  +'<optgroup label="── Europe ──">'
+  +'<option value="GBP">🇬🇧 GBP – British Pound</option>'
+  +'<option value="EUR">🇪🇺 EUR – Euro</option>'
+  +'<option value="CHF">🇨🇭 CHF – Swiss Franc</option>'
+  +'<option value="SEK">🇸🇪 SEK – Swedish Krona</option>'
+  +'<option value="NOK">🇳🇴 NOK – Norwegian Krone</option>'
+  +'<option value="DKK">🇩🇰 DKK – Danish Krone</option>'
+  +'<option value="TRY">🇹🇷 TRY – Turkish Lira</option>'
+  +'<option value="ILS">🇮🇱 ILS – Israeli Shekel</option>'
+  +'</optgroup>'
+  +'<optgroup label="── Africa ──">'
+  +'<option value="ZAR">🇿🇦 ZAR – South African Rand</option>'
+  +'<option value="NGN">🇳🇬 NGN – Nigerian Naira</option>'
+  +'<option value="KES">🇰🇪 KES – Kenyan Shilling</option>'
+  +'<option value="GHS">🇬🇭 GHS – Ghanaian Cedi</option>'
+  +'<option value="EGP">🇪🇬 EGP – Egyptian Pound</option>'
+  +'<option value="ETB">🇪🇹 ETB – Ethiopian Birr</option>'
+  +'<option value="TZS">🇹🇿 TZS – Tanzanian Shilling</option>'
+  +'<option value="UGX">🇺🇬 UGX – Ugandan Shilling</option>'
+  +'<option value="RWF">🇷🇼 RWF – Rwandan Franc</option>'
+  +'<option value="MAD">🇲🇦 MAD – Moroccan Dirham</option>'
+  +'<option value="BWP">🇧🇼 BWP – Botswana Pula</option>'
+  +'<option value="MUR">🇲🇺 MUR – Mauritian Rupee</option>'
+  +'<option value="ZMW">🇿🇲 ZMW – Zambian Kwacha</option>'
+  +'<option value="XOF">🌍 XOF – West African CFA Franc</option>'
+  +'<option value="XAF">🌍 XAF – Central African CFA Franc</option>'
+  +'</optgroup>'
+  +'<optgroup label="── Middle East ──">'
+  +'<option value="AED">🇦🇪 AED – UAE Dirham</option>'
+  +'<option value="SAR">🇸🇦 SAR – Saudi Riyal</option>'
+  +'<option value="QAR">🇶🇦 QAR – Qatari Riyal</option>'
+  +'<option value="KWD">🇰🇼 KWD – Kuwaiti Dinar</option>'
+  +'<option value="BHD">🇧🇭 BHD – Bahraini Dinar</option>'
+  +'<option value="OMR">🇴🇲 OMR – Omani Rial</option>'
+  +'</optgroup>'
+  +'<optgroup label="── Asia Pacific ──">'
+  +'<option value="INR">🇮🇳 INR – Indian Rupee</option>'
+  +'<option value="CNY">🇨🇳 CNY – Chinese Yuan</option>'
+  +'<option value="JPY">🇯🇵 JPY – Japanese Yen</option>'
+  +'<option value="KRW">🇰🇷 KRW – South Korean Won</option>'
+  +'<option value="SGD">🇸🇬 SGD – Singapore Dollar</option>'
+  +'<option value="HKD">🇭🇰 HKD – Hong Kong Dollar</option>'
+  +'<option value="TWD">🇹🇼 TWD – New Taiwan Dollar</option>'
+  +'<option value="THB">🇹🇭 THB – Thai Baht</option>'
+  +'<option value="MYR">🇲🇾 MYR – Malaysian Ringgit</option>'
+  +'<option value="IDR">🇮🇩 IDR – Indonesian Rupiah</option>'
+  +'<option value="PHP">🇵🇭 PHP – Philippine Peso</option>'
+  +'<option value="VND">🇻🇳 VND – Vietnamese Dong</option>'
+  +'<option value="PKR">🇵🇰 PKR – Pakistani Rupee</option>'
+  +'<option value="BDT">🇧🇩 BDT – Bangladeshi Taka</option>'
+  +'<option value="LKR">🇱🇰 LKR – Sri Lankan Rupee</option>'
+  +'<option value="NPR">🇳🇵 NPR – Nepalese Rupee</option>'
+  +'<option value="AUD">🇦🇺 AUD – Australian Dollar</option>'
+  +'<option value="NZD">🇳🇿 NZD – New Zealand Dollar</option>'
+  +'</optgroup>';
+
+function populateCurrencySelects(selectedVal){
+  var ids=['ob-currency','wz-currency','po-currency','req-currency','rfq-currency','pc-currency','ci-currency','st-currency'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.innerHTML=CURRENCY_OPTIONS;
+    if(selectedVal) el.value=selectedVal;
+  });
+}
+
 var appSettings={
   userName:'Alex',
   companyName:'Acme Trading Co',
@@ -6278,6 +6365,7 @@ function importBackup(input){
 window.onload=function(){
   // 1. Load persisted data first, then apply settings to the UI
   loadFromStorage();
+  populateCurrencySelects(appSettings.currency);
   applySettings();
   // 2. Render all tables
   renderPOTable();
