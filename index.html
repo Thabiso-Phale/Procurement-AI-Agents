@@ -28,6 +28,12 @@ a{text-decoration:none;color:inherit}
 .sb-tier strong{color:#60A5FA;font-size:13px;display:block;margin-bottom:4px}
 .upgrade-btn{width:100%;margin-top:8px;padding:7px;background:#3B82F6;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
 .upgrade-btn:hover{background:#2563EB}
+.feedback-float{position:fixed;bottom:24px;right:24px;z-index:9999;background:#0D2B5E;color:#fff;border:none;border-radius:50px;padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(13,43,94,0.35);display:flex;align-items:center;gap:8px;transition:transform 0.15s,box-shadow 0.15s;text-decoration:none}
+.feedback-float:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(13,43,94,0.45)}
+.feedback-float .fb-dot{width:8px;height:8px;background:#34D399;border-radius:50%;animation:fb-pulse 2s infinite}
+@keyframes fb-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)}}
+.sb-feedback-btn{display:block;margin:0 12px 8px;padding:9px 12px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;font-weight:600;text-align:center;cursor:pointer;text-decoration:none;transition:background 0.15s}
+.sb-feedback-btn:hover{background:rgba(255,255,255,0.13)}
 
 /* Pricing page */
 .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:24px 0}
@@ -355,6 +361,7 @@ textarea.form-input{resize:vertical;min-height:80px}
     <div class="nav-item" onclick="showView('pricing')"><span class="nav-icon">💰</span> Pricing & Plans</div>
     <div class="nav-item" onclick="showView('settings')"><span class="nav-icon">⚙️</span> Settings</div>
   </div>
+  <a class="sb-feedback-btn" href="mailto:support@procure-flow.net?subject=ProcureAI%20Beta%20Feedback&body=Hi%20ProcureAI%20team%2C%0A%0AWhat%20I%20was%20trying%20to%20do%3A%0A%0AWhat%20happened%3A%0A%0AMy%20suggestion%3A%0A%0A----%0ABeta%20user%20feedback">✉️ Send Feedback</a>
   <div class="sb-tier">
     <strong>🌱 Start (Free)</strong>
     <p>Grow from $39/mo · Team from $89/mo</p>
@@ -6398,5 +6405,13 @@ window.onload=function(){
 
   </div>
 </div>
+
+<!-- Floating feedback button -->
+<a class="feedback-float no-print"
+   href="mailto:support@procure-flow.net?subject=ProcureAI%20Beta%20Feedback&body=Hi%20ProcureAI%20team%2C%0A%0AWhat%20I%20was%20trying%20to%20do%3A%0A%0AWhat%20happened%20%2F%20what%20I%20expected%3A%0A%0AMy%20suggestion%3A%0A%0A----%0ABeta%20user%20feedback"
+   title="Send feedback to the ProcureAI team">
+  <span class="fb-dot"></span> Beta Feedback
+</a>
+
 </body>
 </html>
