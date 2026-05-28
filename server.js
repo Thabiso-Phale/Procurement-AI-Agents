@@ -100,7 +100,7 @@ const server = http.createServer(function(req, res) {
   });
 });
 
-server.listen(PORT, '127.0.0.1', function() {
+server.listen(PORT, '0.0.0.0', function() {
   console.log('');
   console.log('  ============================================');
   console.log('   ProcureAI is running!');
