@@ -363,7 +363,8 @@ textarea.form-input{resize:vertical;min-height:80px}
   </div>
   <a class="sb-feedback-btn" href="mailto:support@procure-flow.net?subject=ProcureAI%20Beta%20Feedback&body=Hi%20ProcureAI%20team%2C%0A%0AWhat%20I%20was%20trying%20to%20do%3A%0A%0AWhat%20happened%3A%0A%0AMy%20suggestion%3A%0A%0A----%0ABeta%20user%20feedback">✉️ Send Feedback</a>
   <div class="sb-tier">
-    <strong>🌱 Start (Free)</strong>
+    <div id="sb-plan-badge" style="display:none;background:#1D4ED8;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:inline-block"></div>
+    <strong id="sb-tier-label">🌱 Start (Free)</strong>
     <p>Grow from $39/mo · Team from $89/mo</p>
     <button class="upgrade-btn" onclick="showView('pricing')">View Pricing & Plans →</button>
   </div>
@@ -2406,7 +2407,7 @@ textarea.form-input{resize:vertical;min-height:80px}
             <div class="pricing-feature pricing-feature-off"><span style="font-weight:700">✗</span> Contract management</div>
             <div class="pricing-feature pricing-feature-off"><span style="font-weight:700">✗</span> Multi-currency support</div>
             <div class="pricing-cta">
-              <button class="btn btn-outline" style="width:100%;justify-content:center;padding:11px 0;font-size:14px" disabled>✓ Your Current Plan</button>
+              <button id="pricing-free-btn" class="btn btn-outline" style="width:100%;justify-content:center;padding:11px 0;font-size:14px" disabled>✓ Your Current Plan</button>
             </div>
           </div>
 
@@ -2436,7 +2437,7 @@ textarea.form-input{resize:vertical;min-height:80px}
             <div class="pricing-feature pricing-feature-off"><span style="font-weight:700">✗</span> Multi-user / team access</div>
             <div class="pricing-feature pricing-feature-off"><span style="font-weight:700">✗</span> Xero / QuickBooks integration</div>
             <div class="pricing-cta">
-              <a href="mailto:support@procure-flow.net?subject=ProcureAI%20Early%20Access%20%E2%80%94%20Grow%20Plan%20(%2439%2Fmo)&body=Hi%20ProcureAI%20team%2C%0A%0AI%27ve%20just%20tried%20the%20beta%20and%20I%27m%20interested%20in%20the%20Grow%20plan%20(%2439%2Fmo).%0A%0AMy%20company%3A%20%0ATeam%20size%3A%20%0ACurrent%20procurement%20tool%20(if%20any)%3A%20%0AMonthly%20vs%20annual%20preference%3A%20%0ABest%20time%20to%20talk%3A%20%0A%0AThanks" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px 0;font-size:14px;text-decoration:none">✉ Get Early Access — $39/mo</a>
+              <a id="pricing-grow-btn" href="mailto:support@procure-flow.net?subject=ProcureAI%20Early%20Access%20%E2%80%94%20Grow%20Plan%20(%2439%2Fmo)&body=Hi%20ProcureAI%20team%2C%0A%0AI%27ve%20just%20tried%20the%20beta%20and%20I%27m%20interested%20in%20the%20Grow%20plan%20(%2439%2Fmo).%0A%0AMy%20company%3A%20%0ATeam%20size%3A%20%0ACurrent%20procurement%20tool%20(if%20any)%3A%20%0AMonthly%20vs%20annual%20preference%3A%20%0ABest%20time%20to%20talk%3A%20%0A%0AThanks" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px 0;font-size:14px;text-decoration:none">✉ Get Early Access — $39/mo</a>
             </div>
           </div>
 
@@ -2462,11 +2463,20 @@ textarea.form-input{resize:vertical;min-height:80px}
             <div class="pricing-feature"><span style="color:#4ADE80;font-weight:700">✓</span> Compliance &amp; audit report exports</div>
             <div class="pricing-feature"><span style="color:#4ADE80;font-weight:700">✓</span> Advanced audit trail &amp; data retention</div>
             <div class="pricing-cta">
-              <a href="mailto:support@procure-flow.net?subject=ProcureAI%20Early%20Access%20%E2%80%94%20Team%20Plan%20(%2489%2Fmo)&body=Hi%20ProcureAI%20team%2C%0A%0AI%27ve%20just%20tried%20the%20beta%20and%20I%27m%20interested%20in%20the%20Team%20plan%20(%2489%2Fmo).%0A%0AMy%20company%3A%20%0ATeam%20size%3A%20%0ANumber%20of%20users%20needed%3A%20%0ACurrent%20procurement%20tool%20(if%20any)%3A%20%0AMonthly%20vs%20annual%20preference%3A%20%0ABest%20time%20to%20talk%3A%20%0A%0AThanks" class="btn btn-blue" style="width:100%;justify-content:center;padding:11px 0;font-size:14px;text-decoration:none">✉ Get Early Access — $89/mo</a>
+              <a id="pricing-team-btn" href="mailto:support@procure-flow.net?subject=ProcureAI%20Early%20Access%20%E2%80%94%20Team%20Plan%20(%2489%2Fmo)&body=Hi%20ProcureAI%20team%2C%0A%0AI%27ve%20just%20tried%20the%20beta%20and%20I%27m%20interested%20in%20the%20Team%20plan%20(%2489%2Fmo).%0A%0AMy%20company%3A%20%0ATeam%20size%3A%20%0ANumber%20of%20users%20needed%3A%20%0ACurrent%20procurement%20tool%20(if%20any)%3A%20%0AMonthly%20vs%20annual%20preference%3A%20%0ABest%20time%20to%20talk%3A%20%0A%0AThanks" class="btn btn-blue" style="width:100%;justify-content:center;padding:11px 0;font-size:14px;text-decoration:none">✉ Get Early Access — $89/mo</a>
             </div>
           </div>
 
         </div><!-- /pricing-grid -->
+
+        <!-- License key activation shortcut -->
+        <div style="margin-top:24px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="font-weight:700;color:#0D2B5E;font-size:14px">🔑 Already have a license key?</div>
+            <div style="font-size:13px;color:#64748B;margin-top:3px">Received your key by email? Activate it in Settings to unlock your plan instantly.</div>
+          </div>
+          <button class="btn btn-primary" style="padding:10px 20px;font-size:13px;white-space:nowrap" onclick="showView('settings');setTimeout(function(){var el=document.getElementById('st-license-key');if(el){el.scrollIntoView({behavior:'smooth'});el.focus();}},200)">Activate Key in Settings →</button>
+        </div>
 
         <!-- All plans include -->
         <div class="pricing-all-inc">
@@ -2527,6 +2537,32 @@ textarea.form-input{resize:vertical;min-height:80px}
           </div>
         </div>
       </div>
+      <!-- Plan & License Card -->
+      <div class="card" style="margin-top:16px;border:2px solid #E9D5FF">
+        <div class="card-title" style="color:#7C3AED">🔑 Plan &amp; License</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div>
+            <div style="font-size:13px;color:#334155">Current plan: <span id="plan-label-settings" style="font-weight:700;color:#7C3AED">Free</span></div>
+            <div id="plan-email-settings" style="font-size:12px;color:#64748B;margin-top:2px"></div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="showView('pricing')" style="border-color:#7C3AED;color:#7C3AED">⬆ Upgrade Plan</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">License Key</label>
+          <input type="text" class="form-input" id="st-license-key" placeholder="G-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" style="font-family:monospace;text-transform:uppercase">
+          <div class="form-hint">Received your license key by email after payment? Paste it here along with the email address you used to pay.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email used for payment</label>
+          <input type="email" class="form-input" id="st-license-email" placeholder="you@company.com">
+        </div>
+        <div id="license-status" style="display:none;margin-top:8px;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-primary" onclick="validateAndActivateLicense()">✓ Activate License</button>
+          <button class="btn btn-outline" onclick="deactivateLicense()" style="color:#DC2626;border-color:#FCA5A5">Remove License</button>
+        </div>
+      </div>
+
       <!-- AI Integration Card -->
       <div class="card" style="margin-top:16px;border:2px solid #DBEAFE">
         <div class="card-title" style="color:#1D4ED8">🤖 AI Integration — Claude API</div>
@@ -3684,6 +3720,8 @@ function aiRiskAssessment(){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       apiKey:key,
+      licenseKey:(appSettings.license&&appSettings.license.key)||'',
+      licenseEmail:(appSettings.license&&appSettings.license.email)||'',
       payload:{
         model:'claude-haiku-4-5',
         max_tokens:400,
@@ -4383,6 +4421,8 @@ function sendChat(){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       apiKey:appSettings.anthropicKey||'',
+      licenseKey:(appSettings.license&&appSettings.license.key)||'',
+      licenseEmail:(appSettings.license&&appSettings.license.email)||'',
       payload:{
         model:'claude-haiku-4-5',
         max_tokens:1024,
@@ -5686,8 +5726,28 @@ var appSettings={
   autoApproveLimit:500,
   rfqThreshold:2500,
   directorThreshold:10000,
-  anthropicKey:''
+  anthropicKey:'',
+  license:{ plan:'free', email:'', key:'' }
 };
+
+// ── Plan feature gates ────────────────────────────────────────────
+var PLAN_LIMITS = {
+  free: { suppliers: 3,  label: 'Free',  color: '#64748B' },
+  grow: { suppliers: 25, label: 'Grow',  color: '#1D4ED8' },
+  team: { suppliers: 999,label: 'Team',  color: '#7C3AED' }
+};
+function currentPlan(){ return appSettings.license&&appSettings.license.plan||'free'; }
+function hasFeature(f){
+  var p=currentPlan();
+  if(f==='unlimited_ai') return p==='grow'||p==='team';
+  if(f==='pdf_export')   return p==='grow'||p==='team';
+  if(f==='rfq')          return p==='grow'||p==='team';
+  if(f==='risk_watch')   return p==='grow'||p==='team';
+  if(f==='contracts')    return p==='grow'||p==='team';
+  if(f==='team_features')return p==='team';
+  return true; // default allow
+}
+function supplierLimit(){ return PLAN_LIMITS[currentPlan()].suppliers; }
 
 var SK={
   settings:'procureai_settings',
@@ -5807,6 +5867,105 @@ function clearAPIKey(){
   toast('API key removed.');
 }
 
+// ── License activation ────────────────────────────────────────────
+function validateAndActivateLicense(){
+  var key=(document.getElementById('st-license-key').value||'').trim().toUpperCase();
+  var email=(document.getElementById('st-license-email').value||'').trim().toLowerCase();
+  var st=document.getElementById('license-status');
+  if(!key||!email){
+    st.style.display='block';st.style.background='#FEF9C3';st.style.color='#92400E';
+    st.textContent='⚠ Please enter both your license key and the email address used for payment.';
+    return;
+  }
+  st.style.display='block';st.style.background='#EFF6FF';st.style.color='#1D4ED8';
+  st.textContent='🔄 Validating license...';
+  fetch('/api/validate-license',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({key:key,email:email})
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.valid){
+      appSettings.license={plan:d.plan,email:d.email,key:key};
+      saveToStorage();
+      applyLicenseUI();
+      st.style.background='#DCFCE7';st.style.color='#16A34A';
+      st.textContent='✅ License activated! You are now on the '+d.plan.charAt(0).toUpperCase()+d.plan.slice(1)+' plan.';
+      toast('🎉 '+d.plan.charAt(0).toUpperCase()+d.plan.slice(1)+' plan activated!');
+    } else {
+      st.style.background='#FEE2E2';st.style.color='#DC2626';
+      st.textContent='✕ Invalid license key or email. Check your activation email and try again.';
+    }
+  }).catch(function(){
+    st.style.background='#FEE2E2';st.style.color='#DC2626';
+    st.textContent='✕ Could not reach the server. Check your connection and try again.';
+  });
+}
+
+function updatePricingButtons(){
+  var plan=currentPlan();
+  var freeBtn=document.getElementById('pricing-free-btn');
+  var growBtn=document.getElementById('pricing-grow-btn');
+  var teamBtn=document.getElementById('pricing-team-btn');
+  if(freeBtn){freeBtn.textContent=plan==='free'?'✓ Your Current Plan':'Downgrade to Free';freeBtn.disabled=(plan==='free');}
+  if(growBtn){
+    if(plan==='grow'){growBtn.textContent='✓ Your Current Plan';growBtn.className='btn btn-outline';growBtn.style.cssText='width:100%;justify-content:center;padding:11px 0;font-size:14px;cursor:default';}
+    else{growBtn.textContent='✉ Get Early Access — $39/mo';growBtn.className='btn btn-primary';growBtn.style.cssText='width:100%;justify-content:center;padding:11px 0;font-size:14px;text-decoration:none';}
+  }
+  if(teamBtn){
+    if(plan==='team'){teamBtn.textContent='✓ Your Current Plan';teamBtn.className='btn btn-outline';teamBtn.style.cssText='width:100%;justify-content:center;padding:11px 0;font-size:14px;cursor:default';}
+    else{teamBtn.textContent='✉ Get Early Access — $89/mo';teamBtn.className='btn btn-blue';teamBtn.style.cssText='width:100%;justify-content:center;padding:11px 0;font-size:14px;text-decoration:none';}
+  }
+}
+
+function checkSupplierLimit(){
+  var limit=supplierLimit();
+  // Count unique active suppliers from PO data
+  var activeSuppliers=[];
+  poData.forEach(function(p){if(p.supplier&&activeSuppliers.indexOf(p.supplier)===-1)activeSuppliers.push(p.supplier);});
+  if(activeSuppliers.length>=limit){
+    var planName=PLAN_LIMITS[currentPlan()].label;
+    var nextPlan=currentPlan()==='free'?'Grow':'Team';
+    toast('⚠ '+planName+' plan limit: '+limit+' suppliers max. Upgrade to '+nextPlan+' to add more → Settings → Plan & License');
+    return false;
+  }
+  return true;
+}
+
+function deactivateLicense(){
+  appSettings.license={plan:'free',email:'',key:''};
+  document.getElementById('st-license-key').value='';
+  document.getElementById('st-license-email').value='';
+  var st=document.getElementById('license-status');
+  st.style.display='block';st.style.background='#F1F5F9';st.style.color='#64748B';
+  st.textContent='License removed. You are now on the Free plan.';
+  saveToStorage();
+  applyLicenseUI();
+  toast('License removed.');
+}
+
+function applyLicenseUI(){
+  var plan=currentPlan();
+  var info=PLAN_LIMITS[plan]||PLAN_LIMITS.free;
+  // Settings card
+  var lbl=document.getElementById('plan-label-settings');
+  if(lbl){lbl.textContent=info.label;lbl.style.color=info.color;}
+  var em=document.getElementById('plan-email-settings');
+  if(em){em.textContent=appSettings.license&&appSettings.license.email?'Activated for: '+appSettings.license.email:'';}
+  // Pre-fill fields if license exists
+  var kf=document.getElementById('st-license-key');
+  var ef=document.getElementById('st-license-email');
+  if(kf&&appSettings.license&&appSettings.license.key)kf.value=appSettings.license.key;
+  if(ef&&appSettings.license&&appSettings.license.email)ef.value=appSettings.license.email;
+  // Sidebar plan badge
+  var sb=document.getElementById('sb-plan-badge');
+  if(sb){
+    if(plan==='free'){sb.style.display='none';}
+    else{sb.style.display='block';sb.textContent=info.label+' Plan';sb.style.background=plan==='team'?'#7C3AED':'#1D4ED8';}
+  }
+  // Pricing page — update "Your Current Plan" button
+  updatePricingButtons();
+}
+
 function testAPIConnection(){
   var key=document.getElementById('st-api-key').value.trim()||appSettings.anthropicKey;
   var st=document.getElementById('api-key-status');
@@ -5897,7 +6056,7 @@ function scoutSuppliers(){
     +'Use clean HTML: <strong> for names, <ul><li> for bullets. Max 280 words. No preamble — start with the first supplier.';
 
   fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({apiKey:appSettings.anthropicKey||'',payload:{model:'claude-haiku-4-5',max_tokens:700,
+    body:JSON.stringify({apiKey:appSettings.anthropicKey||'',licenseKey:(appSettings.license&&appSettings.license.key)||'',licenseEmail:(appSettings.license&&appSettings.license.email)||'',payload:{model:'claude-haiku-4-5',max_tokens:700,
       messages:[{role:'user',content:prompt}]}})})
   .then(function(r){return r.json();})
   .then(function(data){
@@ -6070,6 +6229,8 @@ function onInvoiceScanFileSelected(input){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         apiKey:appSettings.anthropicKey||'',
+        licenseKey:(appSettings.license&&appSettings.license.key)||'',
+        licenseEmail:(appSettings.license&&appSettings.license.email)||'',
         payload:{
           model:'claude-haiku-4-5',
           max_tokens:512,
@@ -6367,6 +6528,7 @@ window.onload=function(){
   loadFromStorage();
   populateCurrencySelects(appSettings.currency);
   applySettings();
+  applyLicenseUI();
   // 2. Render all tables
   renderPOTable();
   renderReqTable();
