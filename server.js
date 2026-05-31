@@ -221,6 +221,15 @@ const server = http.createServer(function(req, res) {
     return;
   }
 
+  if (req.method === 'GET' && (req.url === '/guide' || req.url === '/guide/')) {
+    fs.readFile(path.join(DIR, 'guide.html'), function(err, data) {
+      if (err) { res.writeHead(404); res.end('Not found'); return; }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(data);
+    });
+    return;
+  }
+
   if (req.method === 'GET' && (req.url === '/terms' || req.url === '/terms/')) {
     fs.readFile(path.join(DIR, 'terms.html'), function(err, data) {
       if (err) { res.writeHead(404); res.end('Not found'); return; }
