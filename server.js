@@ -211,6 +211,25 @@ const server = http.createServer(function(req, res) {
     return;
   }
 
+  // ── LEGAL PAGES ──────────────────────────────────────────────
+  if (req.method === 'GET' && (req.url === '/privacy' || req.url === '/privacy/')) {
+    fs.readFile(path.join(DIR, 'privacy.html'), function(err, data) {
+      if (err) { res.writeHead(404); res.end('Not found'); return; }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(data);
+    });
+    return;
+  }
+
+  if (req.method === 'GET' && (req.url === '/terms' || req.url === '/terms/')) {
+    fs.readFile(path.join(DIR, 'terms.html'), function(err, data) {
+      if (err) { res.writeHead(404); res.end('Not found'); return; }
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(data);
+    });
+    return;
+  }
+
   // ── STATIC FILE SERVER ───────────────────────────────────────
   var url  = req.url === '/' ? '/index.html' : req.url;
   var file = path.join(DIR, url.split('?')[0]);
