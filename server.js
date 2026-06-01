@@ -211,7 +211,159 @@ const server = http.createServer(function(req, res) {
     return;
   }
 
-  // ── LEGAL PAGES ──────────────────────────────────────────────
+  // ── LEMON SQUEEZY WEBHOOK  POST /webhook/lemonsqueezy ────────
+var LS_WEBHOOK_SECRET = (process.env.LEMONSQUEEZY_WEBHOOK_SECRET || '').trim();
+var RESEND_API_KEY    = (process.env.RESEND_API_KEY || '').trim();
+var RESEND_FROM       = (process.env.RESEND_FROM || 'ProcureAI <hello@procure-flow.net>').trim();
+
+// Variant ID → plan mapping
+var LS_VARIANT_PLANS = {
+  '1733973': 'grow',  // Grow Monthly  $39/mo
+  '1734044': 'grow',  // Grow Annual   $390/yr
+  '1734050': 'team',  // Team Monthly  $89/mo
+  '1734064': 'team'   // Team Annual   $890/yr
+};
+
+function sendLicenseEmail(toEmail, licenseKey, plan, cb) {
+  if (!RESEND_API_KEY) {
+    console.log('  [webhook] RESEND_API_KEY not set — skipping email, key: ' + licenseKey);
+    return cb(null);
+  }
+  var planLabel = plan === 'team' ? 'Team' : 'Grow';
+  var html = [
+    '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#F8FAFC">',
+    '<div style="background:#0D2B5E;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px">',
+    '<div style="font-size:36px">&#128722;</div>',
+    '<h1 style="color:#fff;font-size:20px;margin:8px 0 4px">Welcome to ProcureAI ' + planLabel + '!</h1>',
+    '<p style="color:#93C5FD;font-size:14px;margin:0">Your license key is ready to activate</p>',
+    '</div>',
+    '<div style="background:#fff;border-radius:12px;padding:24px;border:1px solid #E2E8F0;margin-bottom:20px">',
+    '<p style="font-size:13px;color:#64748B;margin:0 0 12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Your License Key</p>',
+    '<div style="background:#F1F5F9;border-radius:8px;padding:18px;text-align:center;font-family:monospace;font-size:22px;font-weight:700;color:#0D2B5E;letter-spacing:3px">' + licenseKey + '</div>',
+    '<p style="font-size:12px;color:#94A3B8;text-align:center;margin:8px 0 0">Tied to this email address — keep it safe</p>',
+    '</div>',
+    '<div style="background:#fff;border-radius:12px;padding:24px;border:1px solid #E2E8F0;margin-bottom:20px">',
+    '<h2 style="font-size:14px;font-weight:700;color:#0D2B5E;margin:0 0 14px">Activate in 3 steps</h2>',
+    '<p style="font-size:14px;color:#475569;margin:0 0 8px">&#49;&#65039;&#8419; Open <a href="https://app.procure-flow.net" style="color:#1D4ED8;font-weight:600">app.procure-flow.net</a></p>',
+    '<p style="font-size:14px;color:#475569;margin:0 0 8px">&#50;&#65039;&#8419; Go to <strong>Settings &#8594; License Key</strong></p>',
+    '<p style="font-size:14px;color:#475569;margin:0">&#51;&#65039;&#8419; Enter your email and the key above &#10003;</p>',
+    '</div>',
+    '<p style="font-size:12px;color:#94A3B8;text-align:center;line-height:1.6">',
+    'Need help? Read the <a href="https://app.procure-flow.net/guide" style="color:#3B82F6">Getting Started Guide</a>',
+    ' &nbsp;&#183;&nbsp; ',
+    '<a href="mailto:support@procure-flow.net" style="color:#3B82F6">support@procure-flow.net</a>',
+    '</p>',
+    '</div>'
+  ].join('');
+
+  var payload = JSON.stringify({
+    from: RESEND_FROM,
+    to: [toEmail],
+    subject: 'Your ProcureAI ' + planLabel + ' License Key',
+    html: html
+  });
+
+  var opts = {
+    hostname: 'api.resend.com',
+    path:     '/emails',
+    method:   'POST',
+    headers:  {
+      'Content-Type':   'application/json',
+      'Authorization':  'Bearer ' + RESEND_API_KEY,
+      'Content-Length': Buffer.byteLength(payload)
+    }
+  };
+
+  var emailReq = https.request(opts, function(emailRes) {
+    var d = '';
+    emailRes.on('data', function(c) { d += c; });
+    emailRes.on('end', function() {
+      if (emailRes.statusCode >= 200 && emailRes.statusCode < 300) {
+        console.log('  [webhook] license email sent to ' + toEmail);
+        cb(null);
+      } else {
+        console.error('  [webhook] email failed ' + emailRes.statusCode + ':', d);
+        cb(new Error('email failed: ' + emailRes.statusCode));
+      }
+    });
+  });
+  emailReq.on('error', function(err) {
+    console.error('  [webhook] email error:', err.message);
+    cb(err);
+  });
+  emailReq.write(payload);
+  emailReq.end();
+}
+
+if (req.method === 'POST' && req.url === '/webhook/lemonsqueezy') {
+  var chunks = [];
+  req.on('data', function(chunk) { chunks.push(chunk); });
+  req.on('end', function() {
+    var rawBody = Buffer.concat(chunks).toString('utf8');
+
+    // Verify HMAC signature
+    if (LS_WEBHOOK_SECRET) {
+      var sig      = req.headers['x-signature'] || '';
+      var expected = crypto.createHmac('sha256', LS_WEBHOOK_SECRET).update(rawBody).digest('hex');
+      if (sig !== expected) {
+        console.warn('  [webhook] invalid signature — rejected');
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid signature' }));
+        return;
+      }
+    }
+
+    var event;
+    try { event = JSON.parse(rawBody); } catch(e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid JSON' }));
+      return;
+    }
+
+    var eventName = event.meta && event.meta.event_name;
+    console.log('  [webhook] event:', eventName);
+
+    // Only act on paid orders
+    if (eventName !== 'order_created') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, skipped: eventName }));
+      return;
+    }
+
+    var attrs = event.data && event.data.attributes;
+    if (!attrs || attrs.status !== 'paid') {
+      console.log('  [webhook] order not paid — status:', attrs && attrs.status);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, skipped: 'not paid' }));
+      return;
+    }
+
+    var email     = attrs.user_email;
+    var firstItem = attrs.first_order_item;
+    var variantId = firstItem ? String(firstItem.variant_id) : '';
+    var plan      = LS_VARIANT_PLANS[variantId];
+
+    if (!email || !plan) {
+      console.error('  [webhook] unknown variant or missing email. variant:', variantId, 'email:', email);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: 'unknown variant or missing email' }));
+      return;
+    }
+
+    var licenseKey = makeLicenseKey(email, plan);
+    console.log('  [webhook] generated ' + plan + ' key for ' + email + ': ' + licenseKey);
+
+    sendLicenseEmail(email, licenseKey, plan, function(err) {
+      if (err) console.error('  [webhook] email delivery failed:', err.message);
+    });
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ ok: true, plan: plan, email: email }));
+  });
+  return;
+}
+
+// ── LEGAL PAGES ──────────────────────────────────────────────
   if (req.method === 'GET' && (req.url === '/privacy' || req.url === '/privacy/')) {
     fs.readFile(path.join(DIR, 'privacy.html'), function(err, data) {
       if (err) { res.writeHead(404); res.end('Not found'); return; }
@@ -271,6 +423,16 @@ server.listen(PORT, '0.0.0.0', function() {
     console.log('   License system:  active (/admin for keygen)');
   } else {
     console.log('   License system:  DEV MODE (set LICENSE_SECRET + ADMIN_SECRET in prod)');
+  }
+  if (process.env.LEMONSQUEEZY_WEBHOOK_SECRET) {
+    console.log('   LS webhook:      active (/webhook/lemonsqueezy)');
+  } else {
+    console.log('   LS webhook:      NOT SET (set LEMONSQUEEZY_WEBHOOK_SECRET)');
+  }
+  if (process.env.RESEND_API_KEY) {
+    console.log('   Email delivery:  active (Resend)');
+  } else {
+    console.log('   Email delivery:  NOT SET (set RESEND_API_KEY)');
   }
   console.log('  ============================================');
   console.log('');
