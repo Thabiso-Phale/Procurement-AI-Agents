@@ -45,6 +45,63 @@ setInterval(function() {
   });
 }, 60 * 60 * 1000);
 
+// ── Admin brute-force protection ─────────────────────────────
+// Lock an IP out for 15 min after 5 failed admin attempts
+var adminFailures = {};
+var ADMIN_MAX_FAILS   = 5;
+var ADMIN_LOCK_WINDOW = 15 * 60 * 1000;
+
+function checkAdminAttempt(ip) {
+  var now = Date.now();
+  if (!adminFailures[ip]) adminFailures[ip] = { count: 0, lockedUntil: 0 };
+  if (now < adminFailures[ip].lockedUntil) return false; // locked
+  return true;
+}
+function recordAdminFailure(ip) {
+  var now = Date.now();
+  if (!adminFailures[ip]) adminFailures[ip] = { count: 0, lockedUntil: 0 };
+  adminFailures[ip].count++;
+  if (adminFailures[ip].count >= ADMIN_MAX_FAILS) {
+    adminFailures[ip].lockedUntil = now + ADMIN_LOCK_WINDOW;
+    adminFailures[ip].count = 0;
+    console.warn('  [security] admin locked for 15 min for IP:', ip);
+  }
+}
+function clearAdminFailures(ip) {
+  delete adminFailures[ip];
+}
+
+// ── Webhook rate limiter (separate from AI limiter) ──────────
+// Max 20 requests per IP per minute to the webhook endpoint
+var webhookLimits  = {};
+var WEBHOOK_MAX    = 20;
+var WEBHOOK_WINDOW = 60 * 1000;
+
+function checkWebhookLimit(ip) {
+  var now = Date.now();
+  if (!webhookLimits[ip] || now > webhookLimits[ip].resetAt) {
+    webhookLimits[ip] = { count: 0, resetAt: now + WEBHOOK_WINDOW };
+  }
+  if (webhookLimits[ip].count >= WEBHOOK_MAX) return false;
+  webhookLimits[ip].count++;
+  return true;
+}
+
+// ── Input sanitisation helpers ────────────────────────────────
+var MAX_EMAIL_LEN = 254;
+var MAX_KEY_LEN   = 30;
+var MAX_BODY_KB   = 50 * 1024;    // 50 KB for API endpoints
+var MAX_WEBHOOK_KB = 100 * 1024;  // 100 KB for webhook
+
+function sanitiseEmail(raw) {
+  if (typeof raw !== 'string') return '';
+  return raw.trim().toLowerCase().slice(0, MAX_EMAIL_LEN);
+}
+function sanitiseKey(raw) {
+  if (typeof raw !== 'string') return '';
+  return raw.trim().toUpperCase().replace(/[^A-Z0-9\-]/g, '').slice(0, MAX_KEY_LEN);
+}
+
 // ── License key system ───────────────────────────────────────────
 // Keys are HMAC-SHA256 derived — no database needed.
 // Format: G-XXXXX-XXXXX-XXXXX-XXXXX (Grow) | T-XXXXX-XXXXX-XXXXX-XXXXX (Team)
@@ -78,6 +135,21 @@ var ADMIN_HTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><me
 
 const server = http.createServer(function(req, res) {
 
+  // ── Security headers (applied to every response) ─────────────
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  res.setHeader('Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline'; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "connect-src 'self' https://api.anthropic.com; " +
+    "img-src 'self' data:; " +
+    "frame-ancestors 'none';"
+  );
+
   // ── CORS headers for all responses ──────────────────────────
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -93,8 +165,17 @@ const server = http.createServer(function(req, res) {
 
   // ── GENERATE LICENSE  POST /admin/generate ───────────────────
   if (req.method === 'POST' && req.url === '/admin/generate') {
-    var body = '';
-    req.on('data', function(chunk) { body += chunk.toString(); });
+    var clientIP = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').split(',')[0].trim();
+    if (!checkAdminAttempt(clientIP)) {
+      res.writeHead(429, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Too many failed attempts. Try again in 15 minutes.' })); return;
+    }
+    var body = ''; var bodySize = 0;
+    req.on('data', function(chunk) {
+      bodySize += chunk.length;
+      if (bodySize > MAX_BODY_KB) { req.destroy(); return; }
+      body += chunk.toString();
+    });
     req.on('end', function() {
       var parsed;
       try { parsed = JSON.parse(body); } catch(e) {
@@ -102,32 +183,42 @@ const server = http.createServer(function(req, res) {
         res.end(JSON.stringify({ error: 'Invalid JSON' })); return;
       }
       if (!parsed.secret || parsed.secret !== ADMIN_SECRET) {
+        recordAdminFailure(clientIP);
         res.writeHead(403, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Invalid credentials' })); return;
       }
-      var key = makeLicenseKey(parsed.email, parsed.plan);
+      clearAdminFailures(clientIP);
+      var email = sanitiseEmail(parsed.email);
+      var plan  = (parsed.plan || '').toLowerCase().trim();
+      var key = makeLicenseKey(email, plan);
       if (!key) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Invalid plan. Use: grow or team' })); return;
       }
-      console.log('  [license] generated ' + parsed.plan + ' key for ' + parsed.email);
+      console.log('  [license] generated ' + plan + ' key for ' + email);
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ key: key, email: parsed.email, plan: parsed.plan }));
+      res.end(JSON.stringify({ key: key, email: email, plan: plan }));
     });
     return;
   }
 
   // ── VALIDATE LICENSE  POST /api/validate-license ─────────────
   if (req.method === 'POST' && req.url === '/api/validate-license') {
-    var body = '';
-    req.on('data', function(chunk) { body += chunk.toString(); });
+    var body = ''; var bodySize = 0;
+    req.on('data', function(chunk) {
+      bodySize += chunk.length;
+      if (bodySize > MAX_BODY_KB) { req.destroy(); return; }
+      body += chunk.toString();
+    });
     req.on('end', function() {
       var parsed;
       try { parsed = JSON.parse(body); } catch(e) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ valid: false, error: 'Invalid JSON' })); return;
       }
-      var result = checkLicenseKey(parsed.key, parsed.email);
+      var email = sanitiseEmail(parsed.email);
+      var key   = sanitiseKey(parsed.key);
+      var result = checkLicenseKey(key, email);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(result));
     });
@@ -296,8 +387,18 @@ function sendLicenseEmail(toEmail, licenseKey, plan, cb) {
 }
 
 if (req.method === 'POST' && req.url === '/webhook/lemonsqueezy') {
-  var chunks = [];
-  req.on('data', function(chunk) { chunks.push(chunk); });
+  var webhookIP = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').split(',')[0].trim();
+  if (!checkWebhookLimit(webhookIP)) {
+    res.writeHead(429, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Too many webhook requests' }));
+    return;
+  }
+  var chunks = []; var webhookSize = 0;
+  req.on('data', function(chunk) {
+    webhookSize += chunk.length;
+    if (webhookSize > MAX_WEBHOOK_KB) { req.destroy(); return; }
+    chunks.push(chunk);
+  });
   req.on('end', function() {
     var rawBody = Buffer.concat(chunks).toString('utf8');
 
