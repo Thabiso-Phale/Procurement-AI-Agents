@@ -341,6 +341,7 @@ textarea.form-input{resize:vertical;min-height:80px}
   <div class="sb-nav">
     <div class="nav-item active" onclick="showView('dashboard')"><span class="nav-icon">🏠</span> Dashboard</div>
     <div class="nav-section">Start Here</div>
+    <div class="nav-item" onclick="window.open('/guide','_blank')"><span class="nav-icon">📖</span> Getting Started Guide</div>
     <div class="nav-item" onclick="showView('onboarding')"><span class="nav-icon">➕</span> Add a Supplier</div>
     <div class="nav-item" onclick="showView('suppliers')"><span class="nav-icon">🏢</span> My Suppliers</div>
     <div class="nav-section">Buy Something</div>
@@ -361,11 +362,11 @@ textarea.form-input{resize:vertical;min-height:80px}
     <div class="nav-item" onclick="showView('pricing')"><span class="nav-icon">💰</span> Pricing & Plans</div>
     <div class="nav-item" onclick="showView('settings')"><span class="nav-icon">⚙️</span> Settings</div>
   </div>
-  <!-- Sidebar legal links — visible to all users -->
-  <div style="padding:8px 16px 4px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-    <a href="/guide" target="_blank" style="color:#93C5FD;font-size:11px;text-decoration:none;opacity:0.8" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">📖 Guide</a>
-    <a href="/terms" target="_blank" style="color:#93C5FD;font-size:11px;text-decoration:none;opacity:0.8" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">Terms</a>
-    <a href="/privacy" target="_blank" style="color:#93C5FD;font-size:11px;text-decoration:none;opacity:0.8" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">Privacy</a>
+  <!-- Sidebar legal links -->
+  <div style="padding:6px 16px 2px;display:flex;justify-content:center;gap:14px">
+    <a href="/terms" target="_blank" style="color:#93C5FD;font-size:12px;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#93C5FD'">Terms</a>
+    <span style="color:#334155;font-size:12px">·</span>
+    <a href="/privacy" target="_blank" style="color:#93C5FD;font-size:12px;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#93C5FD'">Privacy</a>
   </div>
   <a class="sb-feedback-btn" href="mailto:support@procure-flow.net?subject=ProcureAI%20Beta%20Feedback&body=Hi%20ProcureAI%20team%2C%0A%0AWhat%20I%20was%20trying%20to%20do%3A%0A%0AWhat%20happened%3A%0A%0AMy%20suggestion%3A%0A%0A----%0ABeta%20user%20feedback">✉️ Send Feedback</a>
   <div class="sb-tier">
@@ -407,6 +408,26 @@ textarea.form-input{resize:vertical;min-height:80px}
 
     <!-- ============ DASHBOARD ============ -->
     <div class="view active" id="view-dashboard">
+
+      <!-- FIRST-TIME WELCOME BANNER — shown once, dismissed to localStorage -->
+      <div id="welcome-banner" style="display:none;background:linear-gradient(135deg,#0D2B5E 0%,#1D4ED8 100%);border-radius:14px;padding:20px 24px;margin-bottom:20px;color:#fff;position:relative">
+        <button onclick="dismissWelcome()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:rgba(255,255,255,0.6);font-size:20px;cursor:pointer;line-height:1" title="Dismiss">✕</button>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+          <div style="font-size:38px">👋</div>
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:17px;font-weight:800;margin-bottom:5px">Welcome to ProcureAI!</div>
+            <div style="font-size:13px;color:#BFDBFE;line-height:1.6">Start by adding your first supplier, then raise a purchase request or get quotes. Our guide walks you through everything in under 5 minutes.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center;min-width:180px">
+            <a href="/guide" target="_blank" style="display:block;background:#fff;color:#0D2B5E;font-size:14px;font-weight:700;padding:10px 20px;border-radius:8px;text-decoration:none;white-space:nowrap;text-align:center">📖 Getting Started Guide →</a>
+            <div style="display:flex;gap:14px;font-size:12px">
+              <a href="/terms" target="_blank" style="color:#BFDBFE;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#BFDBFE'">Terms of Use</a>
+              <span style="color:#3B82F6">·</span>
+              <a href="/privacy" target="_blank" style="color:#BFDBFE;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#BFDBFE'">Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- HEADER -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
@@ -6439,8 +6460,24 @@ function wizardFinish(){
 function clearAllData(){
   if(!window.confirm('This will permanently clear ALL your data. This cannot be undone. Are you sure?')) return;
   Object.keys(SK).forEach(function(k){try{localStorage.removeItem(SK[k]);}catch(e){}});
+  localStorage.removeItem('procureai_welcomed');
   toast('🔄 Clearing all data...');
   setTimeout(function(){window.location.reload();},800);
+}
+
+// ── Welcome banner (first-time users only) ───────────────────
+function showWelcomeBanner(){
+  try{
+    if(!localStorage.getItem('procureai_welcomed')){
+      var b=document.getElementById('welcome-banner');
+      if(b) b.style.display='block';
+    }
+  }catch(e){}
+}
+function dismissWelcome(){
+  try{ localStorage.setItem('procureai_welcomed','1'); }catch(e){}
+  var b=document.getElementById('welcome-banner');
+  if(b) b.style.display='none';
 }
 
 // ============================================================
@@ -6538,6 +6575,7 @@ window.onload=function(){
   populateCurrencySelects(appSettings.currency);
   applySettings();
   applyLicenseUI();
+  showWelcomeBanner();
   // 2. Render all tables
   renderPOTable();
   renderReqTable();
