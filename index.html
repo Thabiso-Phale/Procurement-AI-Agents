@@ -2707,15 +2707,8 @@ textarea.form-input{resize:vertical;min-height:80px}
 // ============================================================
 // DATA
 // ============================================================
-var poData = [
-  {id:'PO-2026-001',supplier:'Office Depot Pro',desc:'Office stationery Q2 restock',amount:1250,currency:'USD',requestedBy:'Tom B',dept:'Operations',date:'2026-05-11',delivery:'2026-05-18',status:'Approved',approver:'Alex',notes:'Deliver to office reception'},
-  {id:'PO-2026-002',supplier:'TechEquip Solutions',desc:'10x HP Laptops i7 16GB for IT team',amount:4800,currency:'USD',requestedBy:'Sarah M',dept:'IT',date:'2026-05-11',delivery:'2026-05-20',status:'Pending Approval',approver:'Sarah M – Manager',notes:'Urgent — IT team refresh project'},
-  {id:'PO-2026-003',supplier:'CloudServ Partners',desc:'Annual CRM subscription renewal',amount:2400,currency:'USD',requestedBy:'Alex',dept:'IT',date:'2026-05-10',delivery:'2026-05-10',status:'Sent',approver:'Alex',notes:'Auto-renews yearly'},
-  {id:'PO-2026-004',supplier:'GlobalShip Logistics',desc:'APAC freight Q2 — sample shipment',amount:890,currency:'SGD',requestedBy:'Alex',dept:'Operations',date:'2026-05-13',delivery:'2026-05-27',status:'Draft',approver:'Alex',notes:'Trial order before full contract'},
-  {id:'PO-2026-005',supplier:'Office Depot Pro',desc:'Printer cartridges x20 pack',amount:650,currency:'USD',requestedBy:'Tom B',dept:'Operations',date:'2026-05-08',delivery:'2026-05-12',status:'Received',approver:'Alex',notes:''},
-  {id:'PO-2026-006',supplier:'Office Depot Pro',desc:'Stationery monthly reorder — May',amount:320,currency:'USD',requestedBy:'Tom B',dept:'Operations',date:'2026-05-12',delivery:'2026-05-16',status:'Pending Approval',approver:'Alex',notes:'Routine monthly order'},
-  {id:'PO-2026-007',supplier:'PrintMaster Co',desc:'Q2 Marketing brochures x500',amount:1200,currency:'USD',requestedBy:'Maria K',dept:'Marketing',date:'2026-05-09',delivery:'2026-05-22',status:'Approved',approver:'Alex',notes:'Brand refresh brochures — check final artwork'}
-];
+var poData = []
+
 
 var currentPOFilter = 'all';
 var currentRejectId = '';
@@ -4641,12 +4634,8 @@ function toast(msg){
 // ============================================================
 // REQUISITIONS
 // ============================================================
-var reqData=[
-  {id:'REQ-2026-001',item:'5x Ergonomic office chairs (Herman Miller Aeron or equiv.)',category:'Furniture',dept:'Operations',budget:1850,currency:'USD',requestedBy:'Tom B',date:'2026-05-10',neededBy:'2026-05-24',priority:'Medium',status:'Pending Approval',justification:'Current chairs are 6 years old and causing staff discomfort. 3 staff reported back issues.',supplierPref:'',linkedPO:''},
-  {id:'REQ-2026-002',item:'2x MacBook Pro 14" M3 Pro — 18GB RAM, 512GB SSD',category:'IT Equipment',dept:'IT',budget:5600,currency:'USD',requestedBy:'Sarah M',date:'2026-05-09',neededBy:'2026-05-20',priority:'High',status:'Converted to PO',justification:'Replacement for 2 failed laptops in development team. Productivity blocked.',supplierPref:'TechEquip Solutions',linkedPO:'PO-2026-003'},
-  {id:'REQ-2026-003',item:'Annual workplace safety training — full team (12 staff)',category:'Training',dept:'HR',budget:800,currency:'USD',requestedBy:'Lisa R',date:'2026-05-12',neededBy:'2026-06-15',priority:'Low',status:'Draft',justification:'Annual compliance requirement. Last completed May 2025.',supplierPref:'',linkedPO:''},
-  {id:'REQ-2026-004',item:'Adobe Creative Cloud — 3 licences (annual)',category:'SaaS / Software',dept:'Marketing',budget:1800,currency:'USD',requestedBy:'Maria K',date:'2026-05-13',neededBy:'2026-05-31',priority:'High',status:'Pending Approval',justification:'Existing licences expire 31 May. Design team will be blocked without renewal.',supplierPref:'CloudServ Partners',linkedPO:''}
-];
+var reqData=[]
+
 var currentReqFilter='all';
 
 function reqStatusBadge(s){
@@ -4933,11 +4922,8 @@ function submitRequisition(){
 // ============================================================
 // RFQ GENERATOR
 // ============================================================
-var rfqData=[
-  {id:'RFQ-2026-001',item:'10x HP EliteBook 840 G10 Laptops — i7, 16GB, 512GB SSD',qty:10,spec:'Windows 11 Pro, 3-year warranty required, delivery to London office',deadline:'2026-05-16',delivery:'2026-05-30',currency:'USD',status:'Quotes Received',suppliers:['TechEquip Solutions','Office Depot Pro','CloudServ Partners'],quotes:[{supplier:'TechEquip Solutions',unitPrice:920,total:9200,deliveryDays:7,paymentTerms:'Net 14',warranty:'2 years',score:0},{supplier:'Office Depot Pro',unitPrice:880,total:8800,deliveryDays:5,paymentTerms:'Net 30',warranty:'3 years',score:0},{supplier:'CloudServ Partners',unitPrice:950,total:9500,deliveryDays:10,paymentTerms:'Monthly',warranty:'1 year',score:0}],awarded:''},
-  {id:'RFQ-2026-002',item:'500x Marketing brochures — A4 full colour, gloss, double-sided',qty:500,spec:'CMYK print, 170gsm gloss paper, folded to DL size',deadline:'2026-05-20',delivery:'2026-06-05',currency:'USD',status:'Awaiting Quotes',suppliers:['PrintMaster Co','Office Depot Pro'],quotes:[],awarded:''},
-  {id:'RFQ-2026-003',item:'Annual liability insurance renewal',qty:1,spec:'£2M public liability, £1M employer liability, professional indemnity cover',deadline:'2026-05-10',delivery:'2026-06-01',currency:'GBP',status:'Awarded',suppliers:['Broker A','Broker B','Broker C'],quotes:[{supplier:'Broker A',unitPrice:3200,total:3200,deliveryDays:1,paymentTerms:'Annual',warranty:'N/A',score:0},{supplier:'Broker B',unitPrice:2850,total:2850,deliveryDays:1,paymentTerms:'Annual',warranty:'N/A',score:0},{supplier:'Broker C',unitPrice:3100,total:3100,deliveryDays:1,paymentTerms:'Monthly',warranty:'N/A',score:0}],awarded:'Broker B'}
-];
+var rfqData=[]
+
 
 function rfqStatusBadge(s){
   var map={'Draft':'badge-gray','Sent':'badge-blue','Awaiting Quotes':'badge-yellow','Quotes Received':'badge-green','Awarded':'badge-purple','Closed':'badge-gray'};
@@ -5193,13 +5179,8 @@ function runPriceComparison(){
 // ============================================================
 // INVOICES & PAYMENTS
 // ============================================================
-var invoiceData=[
-  {id:'INV-2026-001',supplier:'Office Depot Pro',po:'PO-2026-001',invNum:'ODP-INV-20260410',invDate:'2026-04-10',dueDate:'2026-04-17',terms:7,amount:650,taxRate:10,taxAmt:65,total:715,currency:'USD',discPct:0,discDays:0,notes:'',status:'Paid'},
-  {id:'INV-2026-002',supplier:'TechEquip Solutions',po:'PO-2026-002',invNum:'TE-INV-20260325',invDate:'2026-03-25',dueDate:'2026-04-24',terms:30,amount:4800,taxRate:10,taxAmt:480,total:5280,currency:'USD',discPct:0,discDays:0,notes:'Dispute: 1 unit arrived faulty — pending credit note',status:'Overdue'},
-  {id:'INV-2026-003',supplier:'CloudServ Partners',po:'PO-2026-003',invNum:'CS-INV-20260422',invDate:'2026-04-22',dueDate:'2026-05-22',terms:30,amount:2400,taxRate:10,taxAmt:240,total:2640,currency:'USD',discPct:1,discDays:17,notes:'',status:'Pending Payment'},
-  {id:'INV-2026-004',supplier:'Office Depot Pro',po:'PO-2026-001',invNum:'ODP-INV-20260415',invDate:'2026-04-15',dueDate:'2026-05-15',terms:30,amount:1250,taxRate:10,taxAmt:125,total:1375,currency:'USD',discPct:0,discDays:0,notes:'',status:'Pending Payment'},
-  {id:'INV-2026-005',supplier:'PrintMaster Co',po:'',invNum:'PM-INV-20260420',invDate:'2026-04-20',dueDate:'2026-05-20',terms:30,amount:1200,taxRate:10,taxAmt:120,total:1320,currency:'USD',discPct:0,discDays:0,notes:'',status:'Pending Payment'}
-];
+var invoiceData=[]
+
 
 function nextInvoiceNumber(){
   var nums=invoiceData.map(function(i){return parseInt(i.id.split('-')[2])||0;});
@@ -5431,16 +5412,8 @@ function saveInvoice(){
 // ============================================================
 // INVENTORY & ALERTS
 // ============================================================
-var inventoryData=[
-  {id:'ITEM-001',name:'A4 Paper (Box of 5 reams)',cat:'Office Supplies',unit:'Box',stock:12,threshold:20,cost:45,supplier:'Office Depot Pro',notes:'Keep at least 20 boxes for a 2-week buffer'},
-  {id:'ITEM-002',name:'HP EliteBook Laptop',cat:'IT Equipment',unit:'Unit',stock:0,threshold:2,cost:1200,supplier:'TechEquip Solutions',notes:'Critical — needed for new staff onboarding'},
-  {id:'ITEM-003',name:'Ergonomic Office Chair',cat:'Facilities',unit:'Unit',stock:2,threshold:5,cost:350,supplier:'Office Depot Pro',notes:''},
-  {id:'ITEM-004',name:'Printer Toner (Black)',cat:'Office Supplies',unit:'Unit',stock:8,threshold:10,cost:35,supplier:'PrintMaster Co',notes:''},
-  {id:'ITEM-005',name:'Cloud Storage Licence (Annual)',cat:'IT Equipment',unit:'Unit',stock:12,threshold:10,cost:180,supplier:'CloudServ Partners',notes:'Annual licences — track against headcount'},
-  {id:'ITEM-006',name:'Wireless Mouse',cat:'IT Equipment',unit:'Unit',stock:15,threshold:10,cost:25,supplier:'TechEquip Solutions',notes:''},
-  {id:'ITEM-007',name:'Ergonomic Keyboard',cat:'IT Equipment',unit:'Unit',stock:2,threshold:6,cost:85,supplier:'TechEquip Solutions',notes:''},
-  {id:'ITEM-008',name:'Printed Brochures (batch 500)',cat:'Marketing',unit:'Pack',stock:60,threshold:100,cost:280,supplier:'PrintMaster Co',notes:''}
-];
+var inventoryData=[]
+
 
 // ── Reorder in-flight check ───────────────────────────────
 // Returns true if there is an active request or PO that appears to cover this item
@@ -5582,12 +5555,8 @@ function saveInventoryItem(){
 // ============================================================
 // CONTRACTS
 // ============================================================
-var contractData=[
-  {id:'CTR-2026-001',supplier:'TechEquip Solutions',title:'IT Equipment Supply Agreement',cat:'IT Equipment',value:24000,start:'2025-06-01',end:'2026-06-01',reminder:60,autoRenew:true,notes:'Annual review clause. Current prices 8% above agreed contract rates.',status:'Active'},
-  {id:'CTR-2026-002',supplier:'CloudServ Partners',title:'Cloud Infrastructure Services',cat:'SaaS / Software',value:14400,start:'2025-01-01',end:'2026-12-31',reminder:60,autoRenew:false,notes:'Includes 99.9% uptime SLA.',status:'Active'},
-  {id:'CTR-2026-003',supplier:'Office Depot Pro',title:'Office Supplies Framework',cat:'Office Supplies',value:9600,start:'2026-01-01',end:'2027-01-01',reminder:30,autoRenew:false,notes:'Volume pricing tier 2 unlocked at £500/month spend.',status:'Active'},
-  {id:'CTR-2026-004',supplier:'PrintMaster Co',title:'Marketing & Print Services',cat:'Marketing',value:6000,start:'2026-06-01',end:'2027-06-01',reminder:60,autoRenew:false,notes:'Pending signature from supplier.',status:'Draft'}
-];
+var contractData=[]
+
 
 function nextContractNumber(){
   var nums=contractData.map(function(c){return parseInt(c.id.split('-')[2])||0;});
@@ -6468,9 +6437,9 @@ function wizardFinish(){
 }
 
 function clearAllData(){
-  if(!window.confirm('This will reset ALL data back to the demo sample. Your entries will be lost. Are you sure?')) return;
+  if(!window.confirm('This will permanently clear ALL your data. This cannot be undone. Are you sure?')) return;
   Object.keys(SK).forEach(function(k){try{localStorage.removeItem(SK[k]);}catch(e){}});
-  toast('🔄 Resetting to demo data...');
+  toast('🔄 Clearing all data...');
   setTimeout(function(){window.location.reload();},800);
 }
 
