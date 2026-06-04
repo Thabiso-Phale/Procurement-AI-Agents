@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Getting Started Guide — ProcureAI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F8FAFC; color: #1E293B; line-height: 1.7; }
+
+    /* Header */
+    .header { background: #0D2B5E; color: #fff; padding: 20px 0; }
+    .header-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .logo-row { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 36px; height: 36px; background: #1D4ED8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .brand { font-size: 17px; font-weight: 700; }
+    .brand span { font-size: 12px; font-weight: 400; color: #93C5FD; display: block; }
+    .open-btn { background: #1D4ED8; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+    .open-btn:hover { background: #1E40AF; }
+
+    /* Layout */
+    .page { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; display: flex; gap: 40px; align-items: flex-start; }
+    .toc { width: 220px; flex-shrink: 0; position: sticky; top: 24px; }
+    .toc-title { font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+    .toc a { display: block; font-size: 13px; color: #64748B; text-decoration: none; padding: 4px 0; border-left: 2px solid #E2E8F0; padding-left: 12px; margin-bottom: 2px; }
+    .toc a:hover { color: #1D4ED8; border-left-color: #1D4ED8; }
+    .content { flex: 1; min-width: 0; }
+
+    /* Sections */
+    h1 { font-size: 26px; font-weight: 800; color: #0D2B5E; margin-bottom: 6px; }
+    .subtitle { font-size: 15px; color: #64748B; margin-bottom: 32px; }
+    h2 { font-size: 18px; font-weight: 700; color: #0D2B5E; margin: 48px 0 14px; padding-top: 8px; border-top: 1px solid #E2E8F0; }
+    h2:first-of-type { margin-top: 0; border-top: none; }
+    h3 { font-size: 14px; font-weight: 700; color: #334155; margin: 20px 0 8px; }
+    p { font-size: 14px; color: #475569; margin-bottom: 12px; }
+    ul, ol { font-size: 14px; color: #475569; margin: 0 0 14px 20px; }
+    ul li, ol li { margin-bottom: 6px; }
+    a { color: #1D4ED8; }
+    strong { color: #1E293B; }
+
+    /* Quick start steps */
+    .steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0 28px; }
+    .step { display: flex; gap: 14px; align-items: flex-start; background: #fff; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 16px; }
+    .step-num { width: 28px; height: 28px; background: #1D4ED8; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .step-body { flex: 1; }
+    .step-title { font-size: 14px; font-weight: 700; color: #0D2B5E; }
+    .step-desc { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+    /* Module cards */
+    .module { background: #fff; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+    .module-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .module-icon { font-size: 20px; }
+    .module-name { font-size: 14px; font-weight: 700; color: #0D2B5E; }
+    .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .badge-free { background: #F1F5F9; color: #64748B; }
+    .badge-grow { background: #DBEAFE; color: #1D4ED8; }
+    .badge-team { background: #EDE9FE; color: #7C3AED; }
+    .module p { margin-bottom: 6px; }
+    .module ul { margin-bottom: 0; }
+
+    /* Tips */
+    .tip { background: #F0FDF4; border-left: 3px solid #16A34A; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 13px; color: #166534; }
+    .warn { background: #FFF7ED; border-left: 3px solid #F59E0B; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 13px; color: #92400E; }
+    .info { background: #EFF6FF; border-left: 3px solid #3B82F6; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 13px; color: #1E40AF; }
+
+    /* Plan limits table */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 20px; }
+    th { background: #F1F5F9; color: #0D2B5E; font-weight: 700; padding: 9px 12px; text-align: left; border: 1px solid #E2E8F0; }
+    td { padding: 8px 12px; border: 1px solid #E2E8F0; color: #475569; }
+    td.yes { color: #16A34A; font-weight: 600; }
+    td.no { color: #94A3B8; }
+
+    /* Footer */
+    .footer-links { text-align: center; font-size: 13px; color: #94A3B8; margin-top: 56px; padding-top: 20px; border-top: 1px solid #E2E8F0; }
+    .footer-links a { color: #3B82F6; margin: 0 8px; text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .toc { display: none; }
+      .page { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo-row">
+        <div class="logo">🛒</div>
+        <div class="brand">ProcureAI <span>Getting Started Guide</span></div>
+      </div>
+      <a class="open-btn" href="/">Open the App →</a>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <!-- Table of Contents -->
+    <div class="toc">
+      <div class="toc-title">On this page</div>
+      <a href="#quickstart">Quick Start (5 min)</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#suppliers">Suppliers</a>
+      <a href="#requests">Purchase Requests</a>
+      <a href="#rfq">Get Quotes (RFQ)</a>
+      <a href="#compare">Compare Prices</a>
+      <a href="#pos">Purchase Orders</a>
+      <a href="#invoices">Invoices & Payments</a>
+      <a href="#inventory">Inventory & Alerts</a>
+      <a href="#contracts">Contracts</a>
+      <a href="#analytics">Spend Analytics</a>
+      <a href="#alerts">Spend Alerts</a>
+      <a href="#risk">Risk Watch</a>
+      <a href="#ai">AI Assistant</a>
+      <a href="#license">Activate Your License</a>
+      <a href="#data">Your Data & Storage</a>
+      <a href="#settings">Settings</a>
+      <a href="#help">Help & Support</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <h1>Getting Started with ProcureAI</h1>
+      <p class="subtitle">
+        A complete procurement system in your browser — no installation, no sign-up, no IT team required.
+        This guide walks you through every feature in under 15 minutes.
+      </p>
+
+      <!-- Quick Start -->
+      <h2 id="quickstart">⚡ Quick Start — Up and Running in 5 Minutes</h2>
+      <p>Follow these five steps to complete your first procurement cycle end-to-end:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Add your first supplier</div>
+            <div class="step-desc">Click <strong>"Add a Supplier"</strong> in the left sidebar. Fill in the supplier name, contact details, category, and payment terms. Save it — they'll appear in your supplier directory.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Raise a purchase request</div>
+            <div class="step-desc">Click <strong>"Raise a Request"</strong>. Describe what you need, the quantity, budget, and which department is requesting it. Submit for approval.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Get quotes from suppliers</div>
+            <div class="step-desc">Click <strong>"Get Quotes (RFQ)"</strong>. Select suppliers, define what you're buying, set a deadline. The AI drafts the RFQ email for you — copy and send to each supplier. <span style="color:#1D4ED8;font-weight:600">(Grow plan)</span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Create a purchase order</div>
+            <div class="step-desc">Click <strong>"Purchase Orders"</strong> → <strong>"+ New Purchase Order"</strong>. Select your supplier, add line items, set delivery date. Download as a signed PDF to send to the supplier.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">Record the invoice when goods arrive</div>
+            <div class="step-desc">Click <strong>"Invoices & Payments"</strong>. Log the supplier invoice, match it to your PO, and mark it as paid when you settle. Your spend data updates automatically.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>Tip:</strong> The Dashboard shows your full procurement journey as a visual flow. Each step is clickable — use it as your daily home base.
+      </div>
+
+      <!-- Dashboard -->
+      <h2 id="dashboard">🏠 Dashboard</h2>
+      <p>Your command centre. The Dashboard gives you an instant overview of everything happening in your procurement cycle.</p>
+      <ul>
+        <li><strong>Procurement journey flow</strong> — six visual steps from supplier to spend review. Click any step to jump straight there.</li>
+        <li><strong>Action items</strong> — surfaces POs awaiting approval, overdue invoices, low-stock alerts, and price anomalies that need your attention today.</li>
+        <li><strong>Spend summary</strong> — total spend, number of active suppliers, open POs, and pending invoices at a glance.</li>
+      </ul>
+
+      <!-- Suppliers -->
+      <h2 id="suppliers">🏢 Suppliers</h2>
+
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">➕</span>
+          <span class="module-name">Add a Supplier</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Onboard a new supplier with their full profile: name, contact person, email, phone, category, payment terms, lead time, and currency. The AI Supplier Scout can research and pre-fill details for you.</p>
+      </div>
+
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">🏢</span>
+          <span class="module-name">My Suppliers</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>View and manage your full supplier directory. Each supplier card shows their category, rating, and contact details. You can edit, archive, or re-onboard suppliers from here.</p>
+        <div class="warn" style="margin: 8px 0 0;">
+          <strong>Plan limits:</strong> Free plan = 3 suppliers · Grow plan = 25 suppliers · Team plan = unlimited
+        </div>
+      </div>
+
+      <!-- Requests -->
+      <h2 id="requests">📝 Purchase Requests</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">📝</span>
+          <span class="module-name">Raise a Request</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Create an internal purchase requisition before spending anything. Captures:</p>
+        <ul>
+          <li>What you need and why</li>
+          <li>Quantity and estimated budget</li>
+          <li>Department and requester name</li>
+          <li>Priority and required date</li>
+          <li>Preferred supplier (optional)</li>
+        </ul>
+        <p style="margin-top:8px">Requests sit in a queue for approval before becoming a purchase order — giving you a proper audit trail.</p>
+      </div>
+
+      <!-- RFQ -->
+      <h2 id="rfq">📩 Get Quotes (RFQ)</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">📩</span>
+          <span class="module-name">Request for Quotation</span>
+          <span class="badge badge-grow">Grow</span>
+        </div>
+        <p>Send a formal Request for Quotation to one or more suppliers and track responses in one place.</p>
+        <ul>
+          <li>Select suppliers from your directory</li>
+          <li>Define items, quantities, and specifications</li>
+          <li>Set a quote deadline</li>
+          <li>AI drafts a professional RFQ email — copy and send it to each supplier</li>
+          <li>Log their quotes back into the system when received</li>
+        </ul>
+        <div class="tip" style="margin: 8px 0 0;">
+          <strong>Tip:</strong> Always get at least 3 quotes. Use the <strong>Compare Prices</strong> module to evaluate them side by side.
+        </div>
+      </div>
+
+      <!-- Compare -->
+      <h2 id="compare">🤖 Compare Prices</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">🤖</span>
+          <span class="module-name">Compare Prices</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Enter quotes from multiple suppliers for the same item and let the AI score them across price, delivery time, payment terms, and reliability. Produces a clear recommendation so you can make an informed decision — and document it for audit purposes.</p>
+      </div>
+
+      <!-- Purchase Orders -->
+      <h2 id="pos">📋 Purchase Orders</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">📋</span>
+          <span class="module-name">Purchase Orders</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Create legally structured purchase orders that protect your business.</p>
+        <ul>
+          <li>Select a supplier, add line items (description, quantity, unit price, VAT)</li>
+          <li>Set delivery address, delivery date, and payment terms</li>
+          <li>AI adds standard Terms & Conditions automatically</li>
+          <li><strong>Download as a signed PDF</strong> — ready to email directly to your supplier</li>
+          <li>Track PO status: Draft → Sent → Delivered → Closed</li>
+        </ul>
+        <div class="tip" style="margin: 8px 0 0;">
+          <strong>Tip:</strong> Always send a signed PO before paying. It's your legal protection if a supplier disputes the order.
+        </div>
+      </div>
+
+      <!-- Invoices -->
+      <h2 id="invoices">💳 Invoices & Payments</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">💳</span>
+          <span class="module-name">Invoices & Payments</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Record every supplier invoice as it arrives and track payment status:</p>
+        <ul>
+          <li>Log invoice number, supplier, amount, due date, and currency</li>
+          <li>Match invoices to purchase orders for three-way matching</li>
+          <li>Mark as Pending, Approved, or Paid</li>
+          <li>The AI Invoice Scanner can extract details from an invoice description automatically</li>
+          <li>Overdue invoices surface on the Dashboard as urgent action items</li>
+        </ul>
+      </div>
+
+      <!-- Inventory -->
+      <h2 id="inventory">📦 Inventory & Alerts</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">📦</span>
+          <span class="module-name">Inventory & Alerts</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Track stock levels and get early warnings before you run out of critical items.</p>
+        <ul>
+          <li>Add items with current stock, minimum threshold, and reorder quantity</li>
+          <li>When stock falls below the minimum, an alert fires on your Dashboard</li>
+          <li>Link items to preferred suppliers for instant reorder</li>
+        </ul>
+      </div>
+
+      <!-- Contracts -->
+      <h2 id="contracts">📄 Contracts</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">📄</span>
+          <span class="module-name">Contracts</span>
+          <span class="badge badge-grow">Grow</span>
+        </div>
+        <p>Store and track supplier contracts so nothing slips through the cracks.</p>
+        <ul>
+          <li>Record contract name, supplier, start date, end date, and value</li>
+          <li>Set renewal reminders before contracts expire</li>
+          <li>Track contract status: Active, Expiring Soon, Expired</li>
+          <li>Contracts expiring within 30 days appear as Dashboard alerts</li>
+        </ul>
+      </div>
+
+      <!-- Analytics -->
+      <h2 id="analytics">📊 Spend Analytics</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">📊</span>
+          <span class="module-name">Spend Analytics</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Understand exactly where your money is going. Analytics pulls from your invoices and purchase orders to show:</p>
+        <ul>
+          <li>Total spend by supplier, category, and time period</li>
+          <li>Month-over-month spend trends</li>
+          <li>Top suppliers by spend value</li>
+          <li>AI insights — patterns, anomalies, and saving opportunities highlighted automatically</li>
+        </ul>
+      </div>
+
+      <!-- Spend Alerts -->
+      <h2 id="alerts">🔍 Spend Alerts</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">🔍</span>
+          <span class="module-name">Spend Alerts</span>
+          <span class="badge badge-free">Free</span>
+        </div>
+        <p>Set budget thresholds and get alerted when spending approaches or exceeds them.</p>
+        <ul>
+          <li>Define alerts by category, department, or supplier</li>
+          <li>Set monthly or total spend limits</li>
+          <li>Alerts appear on your Dashboard and in the Spend Alerts tab</li>
+        </ul>
+      </div>
+
+      <!-- Risk Watch -->
+      <h2 id="risk">🛡️ Risk Watch</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">🛡️</span>
+          <span class="module-name">Risk Watch</span>
+          <span class="badge badge-grow">Grow</span>
+        </div>
+        <p>Proactively monitor supplier risk so a single vendor failure doesn't shut down your operations.</p>
+        <ul>
+          <li>AI assesses each supplier across reliability, financial stability, lead time consistency, and concentration risk</li>
+          <li>Risk scores are shown as Low / Medium / High with reasoning</li>
+          <li>High-risk suppliers surface automatically for review</li>
+          <li>Recommended mitigation actions provided for each risk flag</li>
+        </ul>
+      </div>
+
+      <!-- AI Assistant -->
+      <h2 id="ai">💬 AI Assistant</h2>
+      <div class="module">
+        <div class="module-header">
+          <span class="module-icon">💬</span>
+          <span class="module-name">AI Assistant</span>
+          <span class="badge badge-free">Free (30 req/day)</span>
+        </div>
+        <p>A procurement-specialist AI assistant powered by Anthropic's Claude. Ask it anything:</p>
+        <ul>
+          <li>"Draft a supplier evaluation scorecard for a logistics provider"</li>
+          <li>"What payment terms should I negotiate with a new supplier?"</li>
+          <li>"Summarise my top 3 spending risks this month"</li>
+          <li>"Write an email chasing an overdue delivery from [Supplier Name]"</li>
+          <li>"What's a fair unit price for 500 units of [item] in [country]?"</li>
+        </ul>
+        <div class="info" style="margin: 10px 0 0;">
+          <strong>Two AI modes:</strong><br>
+          <strong>Hosted key (beta):</strong> Uses ProcureAI's built-in AI — 30 requests/day on the Free plan, unlimited on Grow and Team.<br>
+          <strong>Your own API key:</strong> Add your Anthropic API key in Settings for unlimited use on any plan. Keys are stored only in your browser.
+        </div>
+      </div>
+
+      <!-- License -->
+      <h2 id="license">🔑 Activating Your License Key</h2>
+      <p>If you have a Grow or Team license key, activate it to unlock your plan instantly:</p>
+      <ol>
+        <li>Open the app at <a href="/">app.procure-flow.net</a></li>
+        <li>Click <strong>Settings</strong> in the left sidebar</li>
+        <li>Scroll down to the <strong>"Plan & License"</strong> section</li>
+        <li>Enter the <strong>email address</strong> you used when subscribing</li>
+        <li>Paste your <strong>license key</strong> (format: <code>G-XXXXX-XXXXX-XXXXX-XXXXX</code> for Grow or <code>T-XXXXX-XXXXX-XXXXX-XXXXX</code> for Team)</li>
+        <li>Click <strong>"Activate License"</strong></li>
+      </ol>
+      <p>Your plan upgrades immediately — no restart needed. The plan badge appears in the sidebar.</p>
+      <div class="warn">
+        <strong>Important:</strong> Your license key is bound to the email address you registered with. Use the same email every time. If you clear your browser data, you'll need to re-enter your key — it's always available in your original confirmation email.
+      </div>
+
+      <!-- Data -->
+      <h2 id="data">💾 Your Data & Storage</h2>
+      <p>Understanding how ProcureAI stores data is important — it works differently from most cloud software.</p>
+      <ul>
+        <li><strong>Everything lives in your browser.</strong> All suppliers, purchase orders, invoices, and settings are stored in your browser's localStorage. No data is sent to or stored on our servers.</li>
+        <li><strong>Per-browser storage.</strong> Data on your laptop's Chrome is separate from your desktop's Firefox. If you use multiple devices, use the same browser on the same machine.</li>
+        <li><strong>Back up regularly.</strong> Go to <strong>Settings → Data Management → Export Backup</strong> to download a JSON backup of all your data. Do this weekly.</li>
+        <li><strong>Clearing browser data will erase the app.</strong> If you clear site data or localStorage in your browser settings, all app data will be lost. Always export a backup first.</li>
+        <li><strong>Restoring data.</strong> Go to Settings → Data Management → Import Backup and select your JSON file to restore.</li>
+      </ul>
+      <div class="tip">
+        <strong>Best practice:</strong> Export a backup every Friday and save it to your cloud storage (OneDrive, Google Drive, Dropbox). Takes 10 seconds.
+      </div>
+
+      <!-- Settings -->
+      <h2 id="settings">⚙️ Settings</h2>
+      <p>Access Settings from the bottom of the left sidebar. Key settings to configure on first use:</p>
+      <ul>
+        <li><strong>Company name & currency</strong> — appears on all purchase orders and exports</li>
+        <li><strong>Default currency</strong> — sets the currency for all new transactions (45 global currencies supported)</li>
+        <li><strong>AI Integration</strong> — paste your Anthropic API key here for unlimited AI on any plan. Your key is stored only in your browser and never sent to our servers.</li>
+        <li><strong>Plan & License</strong> — activate your license key here after subscribing</li>
+        <li><strong>Data Management</strong> — export or import backups, and reset all data if needed</li>
+      </ul>
+
+      <!-- Plan comparison -->
+      <h2>📋 Plan Features at a Glance</h2>
+      <table>
+        <tr>
+          <th>Feature</th>
+          <th>Free</th>
+          <th>Grow ($39/mo)</th>
+          <th>Team ($89/mo)</th>
+        </tr>
+        <tr>
+          <td>Suppliers</td>
+          <td>3</td>
+          <td>25</td>
+          <td>Unlimited</td>
+        </tr>
+        <tr>
+          <td>Purchase Orders & Invoices</td>
+          <td class="yes">✓ Unlimited</td>
+          <td class="yes">✓ Unlimited</td>
+          <td class="yes">✓ Unlimited</td>
+        </tr>
+        <tr>
+          <td>Spend Analytics</td>
+          <td class="yes">✓</td>
+          <td class="yes">✓</td>
+          <td class="yes">✓</td>
+        </tr>
+        <tr>
+          <td>AI Assistant (hosted key)</td>
+          <td>30 req/day</td>
+          <td class="yes">✓ Unlimited</td>
+          <td class="yes">✓ Unlimited</td>
+        </tr>
+        <tr>
+          <td>PDF Export</td>
+          <td class="no">—</td>
+          <td class="yes">✓</td>
+          <td class="yes">✓</td>
+        </tr>
+        <tr>
+          <td>RFQ (Get Quotes)</td>
+          <td class="no">—</td>
+          <td class="yes">✓</td>
+          <td class="yes">✓</td>
+        </tr>
+        <tr>
+          <td>Risk Watch</td>
+          <td class="no">—</td>
+          <td class="yes">✓</td>
+          <td class="yes">✓</td>
+        </tr>
+        <tr>
+          <td>Contracts Module</td>
+          <td class="no">—</td>
+          <td class="yes">✓</td>
+          <td class="yes">✓</td>
+        </tr>
+        <tr>
+          <td>Multi-user access</td>
+          <td class="no">—</td>
+          <td class="no">—</td>
+          <td class="yes">✓ Up to 10 seats</td>
+        </tr>
+        <tr>
+          <td>Xero / QuickBooks integration</td>
+          <td class="no">—</td>
+          <td class="no">—</td>
+          <td class="yes">✓</td>
+        </tr>
+        <tr>
+          <td>Dedicated onboarding call</td>
+          <td class="no">—</td>
+          <td class="no">—</td>
+          <td class="yes">✓</td>
+        </tr>
+      </table>
+      <p><a href="/pricing" style="font-size:13px">View full pricing details and upgrade →</a></p>
+
+      <!-- Help -->
+      <h2 id="help">🙋 Help & Support</h2>
+      <p>We're a small team and we actually read our emails.</p>
+      <ul>
+        <li><strong>Email support:</strong> <a href="mailto:support@procure-flow.net">support@procure-flow.net</a> — we reply within 24 hours (weekdays)</li>
+        <li><strong>Beta feedback:</strong> Use the "Beta Feedback" button in the bottom-right of the app to report bugs or suggest features</li>
+        <li><strong>Team plan:</strong> Includes a dedicated onboarding call — book via your welcome email</li>
+      </ul>
+      <div class="info">
+        <strong>Found a bug?</strong> Tell us what you were doing, what happened, and what you expected to happen. Screenshots help a lot. Email <a href="mailto:support@procure-flow.net">support@procure-flow.net</a> — we take bugs seriously.
+      </div>
+
+      <div class="footer-links">
+        <a href="/">← Open ProcureAI</a>
+        <a href="/terms">Terms of Use</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="mailto:support@procure-flow.net">Contact</a>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /page -->
+
+</body>
+</html>
