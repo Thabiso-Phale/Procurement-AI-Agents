@@ -136,6 +136,19 @@
   .cta-banner p{font-size:18px;color:#BFDBFE;margin-bottom:32px}
   .cta-banner-btns{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
 
+  /* ── FAQ ── */
+  .faq{padding:80px 24px;background:#F8FAFC}
+  .faq-inner{max-width:860px;margin:0 auto}
+  .faq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:0;margin-top:48px;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;background:#fff}
+  .faq-item{padding:24px 28px;border-bottom:1px solid #E2E8F0;transition:background .15s}
+  .faq-item:last-child{border-bottom:none}
+  .faq-item:hover{background:#F8FAFC}
+  .faq-q{font-size:14px;font-weight:700;color:#0D2B5E;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+  .faq-q::before{content:'Q';background:#1D4ED8;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px;letter-spacing:.3px}
+  .faq-a{font-size:13px;color:#64748B;line-height:1.65;padding-left:28px}
+  .faq-a a{color:#1D4ED8}
+  @media(max-width:768px){.faq-grid{grid-template-columns:1fr}}
+
   /* ── FOOTER ── */
   footer{background:#0F172A;color:#94A3B8;padding:40px 24px 24px}
   .footer-inner{max-width:1100px;margin:0 auto}
@@ -183,6 +196,7 @@
       <a href="#features">Features</a>
       <a href="#how">How It Works</a>
       <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
       <a href="https://app.procure-flow.net/guide" target="_blank">Guide</a>
       <a href="https://app.procure-flow.net" class="nav-cta">Try Free →</a>
     </div>
@@ -458,6 +472,70 @@
         <h4>Powered by Claude AI</h4>
         <p>Built on Anthropic's Claude — one of the most trusted AI models available.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ═══════════════════════════════════════════════════ -->
+<section class="faq" id="faq">
+  <div class="faq-inner">
+    <div style="text-align:center">
+      <div class="section-label">Got Questions?</div>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-sub">Everything founders ask before they start.</p>
+    </div>
+    <div class="faq-grid">
+
+      <div class="faq-item">
+        <div class="faq-q">Is my data safe? Where is it stored?</div>
+        <div class="faq-a">Everything — your suppliers, purchase orders, invoices, contracts — is stored in your browser's local storage. It never leaves your device and is never sent to our servers. We literally cannot see your data.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What happens if I clear my browser or switch devices?</div>
+        <div class="faq-a">Your data lives in the browser you used to set it up. If you clear site data, it will be erased. We strongly recommend using <strong>Settings → Export Backup</strong> weekly and saving the file to Google Drive or OneDrive. Restoring takes seconds.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I need to install anything?</div>
+        <div class="faq-a">No. ProcureAI runs entirely in your browser — no download, no IT setup, no admin rights required. Open <a href="https://app.procure-flow.net">app.procure-flow.net</a> and you're ready to go.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I need a credit card to start?</div>
+        <div class="faq-a">No credit card, no sign-up, no email required. The Free plan is genuinely free — just open the app and start using it. You only need to pay if you choose to upgrade to Grow or Team.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is there a limit on purchase orders and invoices?</div>
+        <div class="faq-a">No. Purchase orders and invoices are unlimited on every plan — Free, Grow, and Team. The only limits on the Free plan are the number of suppliers (up to 3) and AI requests (30 per day).</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can my team use it together?</div>
+        <div class="faq-a">The Free and Grow plans are single-user. The <strong>Team plan ($89/mo)</strong> supports up to 10 seats with shared data, role-based access, and approval workflows — so your whole ops team can work from the same system.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can I put my company logo and address on documents?</div>
+        <div class="faq-a">Yes. Go to <strong>Settings → Company Profile & Branding</strong> to add your address, phone, email, website, and VAT number — these print on every PO and RFQ at no cost. Logo upload is available on the Grow and Team plans.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Does it work on mobile?</div>
+        <div class="faq-a">The app is responsive and works on tablets and mobile browsers. For heavy data entry (adding suppliers, building POs) a laptop or desktop is more comfortable, but reviewing dashboards and approving requests works well on mobile.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What AI model does it use?</div>
+        <div class="faq-a">ProcureAI is powered by <strong>Claude by Anthropic</strong> — one of the most capable and safety-focused AI models available. You can use our hosted key (30 requests/day free) or add your own Anthropic API key in Settings for unlimited use on any plan.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Can I cancel my subscription anytime?</div>
+        <div class="faq-a">Yes — no contracts, no lock-in. Cancel from your billing portal at any time. Your plan stays active until the end of the billing period, then reverts to Free. Your data stays in your browser regardless.</div>
+      </div>
+
     </div>
   </div>
 </section>
