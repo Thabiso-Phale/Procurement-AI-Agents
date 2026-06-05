@@ -2592,6 +2592,45 @@ textarea.form-input{resize:vertical;min-height:80px}
           </div>
           <div class="form-group"><label class="form-label">Primary Approver Name</label><input class="form-input" id="st-approver" placeholder="e.g. Sarah M – Manager"><div class="form-hint">The person who approves requests above the auto-approve limit</div></div>
         </div>
+        <!-- Company Profile & Branding card -->
+        <div class="card">
+          <div class="card-title">🏢 Company Profile &amp; Branding</div>
+          <div style="background:#EFF6FF;border-radius:8px;padding:10px 12px;font-size:12px;color:#1E40AF;margin-bottom:14px;line-height:1.6">
+            These details appear on every PO, RFQ, and document your business sends. Fill them in once and all documents are automatically branded.
+          </div>
+          <div class="form-group"><label class="form-label">Business Address</label><textarea class="form-input" id="st-address" rows="3" placeholder="e.g. 14 Commerce Park, Unit 5&#10;Dubai, UAE" style="resize:vertical;font-family:inherit"></textarea></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" id="st-phone" placeholder="+971 4 123 4567"></div>
+            <div class="form-group"><label class="form-label">Business Email</label><input class="form-input" id="st-biz-email" placeholder="info@yourcompany.com"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group"><label class="form-label">Website</label><input class="form-input" id="st-website" placeholder="www.yourcompany.com"></div>
+            <div class="form-group"><label class="form-label">VAT / Registration No.</label><input class="form-input" id="st-reg-no" placeholder="e.g. VAT123456789"></div>
+          </div>
+          <!-- Logo upload — Grow/Team only -->
+          <div class="form-group" style="margin-top:4px">
+            <label class="form-label">Company Logo
+              <span id="logo-plan-badge" style="margin-left:8px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:#E9D5FF;color:#7C3AED">Grow &amp; Team</span>
+            </label>
+            <div id="logo-free-msg" style="background:#FEF9C3;border:1px solid #FDE68A;border-radius:8px;padding:10px 12px;font-size:12px;color:#92400E">
+              🔒 Logo on documents is available on the <strong>Grow ($39/mo)</strong> and <strong>Team ($89/mo)</strong> plans.
+              <a href="#" onclick="showView('pricing');return false" style="color:#1D4ED8;font-weight:600;margin-left:4px">Upgrade →</a>
+            </div>
+            <div id="logo-upload-area" style="display:none">
+              <div id="logo-preview-wrap" style="display:none;margin-bottom:10px;padding:10px;background:#F8FAFC;border-radius:8px;border:1px solid #E2E8F0;text-align:center">
+                <img id="logo-preview-img" src="" alt="Logo preview" style="max-height:60px;max-width:200px;object-fit:contain">
+                <div style="font-size:11px;color:#64748B;margin-top:6px">Logo saved — will appear on all documents</div>
+                <button class="btn btn-outline btn-sm" style="margin-top:6px;color:#DC2626;border-color:#FCA5A5" onclick="removeLogo()">✕ Remove Logo</button>
+              </div>
+              <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;padding:9px 14px;border:2px dashed #93C5FD;border-radius:8px;font-size:13px;color:#1D4ED8;background:#EFF6FF;width:100%;box-sizing:border-box;justify-content:center" for="st-logo-input">
+                📤 Click to upload logo (PNG, JPG, SVG — max 500KB)
+              </label>
+              <input type="file" id="st-logo-input" accept="image/png,image/jpeg,image/svg+xml,image/webp" style="display:none" onchange="handleLogoUpload(this)">
+              <div class="form-hint">Your logo is stored in your browser only — never uploaded to any server.</div>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-title">Approval &amp; Spend Rules</div>
           <div style="background:#EFF6FF;border-radius:8px;padding:12px;font-size:12px;color:#1E40AF;margin-bottom:16px;line-height:1.7">
@@ -2777,6 +2816,12 @@ function generatePOPDF(id){
   if(!p){toast('PO not found.');return;}
 
   var company=appSettings.companyName||'Your Company';
+  var compAddr=(appSettings.companyAddress||'').replace(/\n/g,'<br>');
+  var compPhone=appSettings.companyPhone||'';
+  var compEmail=appSettings.companyEmail||'';
+  var compWebsite=appSettings.companyWebsite||'';
+  var compReg=appSettings.companyRegNo||'';
+  var compLogo=(hasFeature('pdf_export')&&appSettings.companyLogo)?appSettings.companyLogo:'';
   var cur=p.currency||appSettings.currency||'USD';
   var sym=getCurrencySymbol(cur);
   var taxRate=cur==='GBP'?20:cur==='EUR'?20:cur==='SGD'?9:cur==='AUD'?10:cur==='CAD'?5:10;
@@ -2842,14 +2887,22 @@ function generatePOPDF(id){
     +'<div class="page">'
 
     +'<div class="hdr">'
-    +'<div><div class="co-name">'+company+'</div><div class="po-label">Purchase Order</div></div>'
+    +(compLogo
+      ?'<div style="display:flex;align-items:center;gap:14px"><img src="'+compLogo+'" style="max-height:56px;max-width:160px;object-fit:contain" alt="'+company+' logo"><div><div class="po-label" style="margin-top:0">Purchase Order</div></div></div>'
+      :'<div><div class="co-name">'+company+'</div><div class="po-label">Purchase Order</div></div>'
+    )
     +'<div><div class="po-num">'+p.id+'</div>'
     +'<div class="po-meta-txt">Date issued: '+p.date+'</div>'
     +'<div class="po-meta-txt">Required by: '+p.delivery+'</div></div>'
     +'</div>'
 
     +'<div class="addr-grid">'
-    +'<div class="addr-box"><div class="lbl">Buyer (Bill To)</div><strong>'+company+'</strong><span>Finance / Procurement Dept</span></div>'
+    +'<div class="addr-box"><div class="lbl">Buyer (Bill To)</div><strong>'+company+'</strong>'
+    +(compAddr?'<span>'+compAddr+'</span>':'<span>Finance / Procurement Dept</span>')
+    +(compPhone?'<span>📞 '+compPhone+'</span>':'')
+    +(compEmail?'<span>✉ '+compEmail+'</span>':'')
+    +(compReg?'<span style="font-size:9pt;color:#94A3B8">Reg/VAT: '+compReg+'</span>':'')
+    +'</div>'
     +'<div class="addr-box"><div class="lbl">Supplier (Ship To)</div><strong>'+p.supplier+'</strong><span>Deliver to '+company+'</span></div>'
     +'<div class="addr-box"><div class="lbl">Order Details</div>'
     +'<span><strong>Currency:</strong> '+cur+'</span>'
@@ -2883,7 +2936,12 @@ function generatePOPDF(id){
     +'</div>'
 
     +'<div class="pg-footer">'
-    +company+' &nbsp;·&nbsp; '+p.id+' &nbsp;·&nbsp; Generated '+new Date().toLocaleDateString()+' via ProcureAI'
+    +'<strong>'+company+'</strong>'
+    +(compPhone?' &nbsp;·&nbsp; '+compPhone:'')
+    +(compEmail?' &nbsp;·&nbsp; '+compEmail:'')
+    +(compWebsite?' &nbsp;·&nbsp; '+compWebsite:'')
+    +(compReg?' &nbsp;·&nbsp; Reg/VAT: '+compReg:'')
+    +'<br>'+p.id+' &nbsp;·&nbsp; Generated '+new Date().toLocaleDateString()+' via ProcureAI'
     +'<br><em>This purchase order is subject to the Standard Terms and Conditions of Purchase printed overleaf.</em>'
     +'</div>'
     +'</div>'
@@ -4998,11 +5056,31 @@ function viewRFQ(id){
   }
   var bestQuote=r.quotes.length?r.quotes[0]:null;
   var el=document.getElementById('rfq-detail-content');
+  var rfqCompany=appSettings.companyName||'Your Company';
+  var rfqAddr=(appSettings.companyAddress||'').replace(/\n/g,' · ');
+  var rfqPhone=appSettings.companyPhone||'';
+  var rfqEmail=appSettings.companyEmail||'';
+  var rfqReg=appSettings.companyRegNo||'';
+  var rfqLogo=(hasFeature('pdf_export')&&appSettings.companyLogo)?appSettings.companyLogo:'';
   el.innerHTML='<div class="section-hdr"><div><h3>'+r.id+' — RFQ Details</h3></div>'
     +'<div class="btn-row"><button class="btn btn-outline" onclick="showView(\'rfq\')">← Back to RFQs</button>'
     +(r.status==='Quotes Received'?'<button class="btn btn-primary" onclick="showView(\'price-comparison\')">🤖 Full AI Price Analysis</button>':'')
     +'</div></div>'
-    +'<div class="card" style="margin-bottom:16px">'
+    // Company letterhead strip on RFQ
+    +'<div style="background:#0D2B5E;border-radius:10px 10px 0 0;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">'
+    +'<div style="display:flex;align-items:center;gap:12px">'
+    +(rfqLogo?'<img src="'+rfqLogo+'" style="height:40px;max-width:120px;object-fit:contain;background:#fff;border-radius:4px;padding:3px">':'')
+    +'<div><div style="font-size:15px;font-weight:800;color:#fff">'+rfqCompany+'</div>'
+    +'<div style="font-size:11px;color:#93C5FD;margin-top:2px">'
+    +(rfqAddr?rfqAddr:'')
+    +(rfqPhone?' · '+rfqPhone:'')
+    +(rfqEmail?' · '+rfqEmail:'')
+    +(rfqReg?' · Reg/VAT: '+rfqReg:'')
+    +'</div></div></div>'
+    +'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:#93C5FD;letter-spacing:1px;text-transform:uppercase">Request for Quotation</div>'
+    +'<div style="font-size:18px;font-weight:900;color:#fff">'+r.id+'</div></div>'
+    +'</div>'
+    +'<div class="card" style="margin-bottom:16px;border-radius:0 0 10px 10px;border-top:none">'
     +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">'
     +'<div><div style="font-size:18px;font-weight:800;color:#0D2B5E">'+r.item+'</div>'
     +'<div style="font-size:13px;color:#64748B;margin-top:4px">Qty: '+r.qty+' · Deadline: '+r.deadline+' · Delivery by: '+r.delivery+'</div></div>'
@@ -5757,6 +5835,12 @@ function populateCurrencySelects(selectedVal){
 var appSettings={
   userName:'',
   companyName:'Acme Trading Co',
+  companyAddress:'',
+  companyPhone:'',
+  companyEmail:'',
+  companyWebsite:'',
+  companyRegNo:'',
+  companyLogo:'',
   monthlyBudget:25000,
   currency:'USD',
   primaryApprover:'Sarah M – Manager',
@@ -5857,10 +5941,28 @@ function applySettings(){
     'st-auto-approve':appSettings.autoApproveLimit,
     'st-rfq-threshold':appSettings.rfqThreshold,
     'st-director-threshold':appSettings.directorThreshold,
-    'st-approver':appSettings.primaryApprover
+    'st-approver':appSettings.primaryApprover,
+    'st-address':appSettings.companyAddress||'',
+    'st-phone':appSettings.companyPhone||'',
+    'st-biz-email':appSettings.companyEmail||'',
+    'st-website':appSettings.companyWebsite||'',
+    'st-reg-no':appSettings.companyRegNo||''
   };
   Object.keys(flds).forEach(function(id){var el=document.getElementById(id);if(el)el.value=flds[id];});
   var cur=document.getElementById('st-currency');if(cur)cur.value=appSettings.currency;
+  // Logo — show upload area for paid plans only
+  var isPaid=hasFeature('pdf_export');
+  var freemsg=document.getElementById('logo-free-msg');
+  var uploadArea=document.getElementById('logo-upload-area');
+  if(freemsg) freemsg.style.display=isPaid?'none':'block';
+  if(uploadArea) uploadArea.style.display=isPaid?'block':'none';
+  // Show logo preview if one is saved
+  if(isPaid&&appSettings.companyLogo){
+    var pw=document.getElementById('logo-preview-wrap');
+    var pi=document.getElementById('logo-preview-img');
+    if(pw) pw.style.display='block';
+    if(pi) pi.src=appSettings.companyLogo;
+  }
   // API key — show masked placeholder if set
   var keyEl=document.getElementById('st-api-key');
   if(keyEl&&appSettings.anthropicKey){keyEl.placeholder='Key saved (paste to replace)';}
@@ -5881,11 +5983,46 @@ function saveSettings(){
   var rt=parseFloat(document.getElementById('st-rfq-threshold').value);if(rt>=0)appSettings.rfqThreshold=rt;
   var dt=parseFloat(document.getElementById('st-director-threshold').value);if(dt>=0)appSettings.directorThreshold=dt;
   var ap=document.getElementById('st-approver').value.trim();if(ap)appSettings.primaryApprover=ap;
+  // Company profile fields
+  var addr=document.getElementById('st-address');if(addr)appSettings.companyAddress=addr.value.trim();
+  var ph=document.getElementById('st-phone');if(ph)appSettings.companyPhone=ph.value.trim();
+  var be=document.getElementById('st-biz-email');if(be)appSettings.companyEmail=be.value.trim();
+  var ws=document.getElementById('st-website');if(ws)appSettings.companyWebsite=ws.value.trim();
+  var rn=document.getElementById('st-reg-no');if(rn)appSettings.companyRegNo=rn.value.trim();
   var key=document.getElementById('st-api-key').value.trim();
   if(key) appSettings.anthropicKey=key;
   saveToStorage();
   applySettings();
   toast('✅ Settings saved! Changes are active across the whole app.');
+}
+
+function handleLogoUpload(input){
+  var file=input.files[0];
+  if(!file) return;
+  if(file.size>512000){toast('⚠ Logo file must be under 500KB. Please resize and try again.');input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    appSettings.companyLogo=e.target.result;
+    saveToStorage();
+    var pw=document.getElementById('logo-preview-wrap');
+    var pi=document.getElementById('logo-preview-img');
+    if(pw) pw.style.display='block';
+    if(pi) pi.src=e.target.result;
+    toast('✅ Logo uploaded! It will appear on all your POs and documents.');
+  };
+  reader.readAsDataURL(file);
+}
+function removeLogo(){
+  if(!window.confirm('Remove your company logo from all documents?')) return;
+  appSettings.companyLogo='';
+  saveToStorage();
+  var pw=document.getElementById('logo-preview-wrap');
+  var pi=document.getElementById('logo-preview-img');
+  if(pw) pw.style.display='none';
+  if(pi) pi.src='';
+  var inp=document.getElementById('st-logo-input');
+  if(inp) inp.value='';
+  toast('Logo removed.');
 }
 
 function toggleKeyVisibility(){
