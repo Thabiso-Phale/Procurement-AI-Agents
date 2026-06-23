@@ -4,7 +4,7 @@
 
 import { getSettings, getPOData, setPOData, getApprovalHistory, setApprovalHistory } from '../store.js';
 import { getCurrencySymbol, toast, nextSeqId } from '../utils.js';
-import { hasFeature } from '../features.js';
+import { hasFeature, checkRecordLimit } from '../features.js';
 import { showView } from '../router.js';
 
 // ── Module state (not persisted — transient UI) ────────────
@@ -309,6 +309,7 @@ function buildLineItems() {
 
 export function submitPO() {
   if (!validatePO()) return;
+  if (!checkRecordLimit('po', getPOData().length)) return;
   const id    = nextPONumber();
   const items = buildLineItems();
   const sub   = items.reduce((a, i) => a + i.total, 0);
@@ -335,6 +336,7 @@ export function submitPO() {
 
 export function saveDraft() {
   if (!document.getElementById('po-supplier').value) { toast('Please select a supplier first'); return; }
+  if (!checkRecordLimit('po', getPOData().length)) return;
   const id    = nextPONumber();
   const items = buildLineItems();
   const sub   = items.reduce((a, i) => a + i.total, 0);
@@ -442,11 +444,17 @@ export function generatePOPDF(id) {
     + '</tr>'
   ).join('');
 
-  // (Full HTML template preserved — same as original, no behavior change)
+  const isFreePlan = !hasFeature('pdf_export');
+  const watermarkCSS = isFreePlan
+    ? '.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:52pt;font-weight:900;color:rgba(0,0,0,0.055);white-space:nowrap;pointer-events:none;z-index:9999;letter-spacing:4px}'
+    : '';
+  const watermarkHTML = isFreePlan ? '<div class="wm">ProcureAI Free</div>' : '';
+
   const html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">'
     + '<title>' + p.id + ' — Purchase Order</title>\n<style>\n'
     + '*{box-sizing:border-box;margin:0;padding:0}'
     + 'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;color:#1A202C;background:#fff}'
+    + watermarkCSS
     + '.page{width:210mm;min-height:297mm;padding:16mm 18mm;margin:0 auto}'
     + '.page2{page-break-before:always}'
     + '.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #0D2B5E}'
@@ -478,6 +486,7 @@ export function generatePOPDF(id) {
     + '.tc-clause h3{font-size:9.5pt;font-weight:700;color:#0D2B5E;margin-bottom:3px}'
     + '.tc-clause p{font-size:8.8pt;color:#334155;line-height:1.55}'
     + '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:12mm 15mm}@page{size:A4;margin:0}}\n</style>\n</head>\n<body>\n'
+    + watermarkHTML
     + '<div class="page">'
     + '<div class="hdr">'
     + (compLogo

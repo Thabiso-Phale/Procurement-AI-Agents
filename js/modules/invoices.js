@@ -3,6 +3,7 @@
 // ============================================================
 
 import { getSettings, getInvoiceData, setInvoiceData, getPOData } from '../store.js';
+import { checkRecordLimit } from '../features.js';
 import { getCurrencySymbol, toast } from '../utils.js';
 import { showView } from '../router.js';
 
@@ -235,6 +236,7 @@ export function saveInvoice() {
   if (errAmt) errAmt.style.display = (amount > 0) ? 'none' : 'block';
   if (!supplier || amount <= 0) return;
   const invoiceData = getInvoiceData();
+  if (!checkRecordLimit('invoices', invoiceData.length)) return;
   const nums = invoiceData.map(i => parseInt((i.id || '').split('-')[2]) || 0);
   const max  = nums.length ? Math.max(...nums) : 4;
   const id   = 'INV-2026-' + (max + 1).toString().padStart(3, '0');

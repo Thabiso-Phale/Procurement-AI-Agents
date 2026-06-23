@@ -24,7 +24,7 @@ const MIME = {
 // ── Beta rate limiter (applies only when using the hosted key) ──
 // 30 AI requests per IP per 24 hours — enough for thorough beta testing.
 var rateLimits  = {};
-var RATE_LIMIT  = 30;
+var RATE_LIMIT  = 5;
 var RATE_WINDOW = 24 * 60 * 60 * 1000; // 24 h in ms
 
 function checkRateLimit(ip) {

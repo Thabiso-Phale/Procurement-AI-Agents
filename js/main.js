@@ -8,7 +8,7 @@ import { load as storeLoad, getSettings } from './store.js';
 
 // ── Utils / Features ──────────────────────────────────────
 import { toast, populateCurrencySelects } from './utils.js';
-import { applyLicenseUI } from './features.js';
+import { applyLicenseUI, hasFeature, showFeatureUpgrade } from './features.js';
 
 // ── Router ────────────────────────────────────────────────
 import { showView, toggleSidebar, closeSidebar, printPage, initRouter } from './router.js';
@@ -183,6 +183,25 @@ Object.assign(window, {
   toast
 });
 
+
+// ── Upgrade modal ─────────────────────────────────────────
+window.closeUpgradeModal = function() {
+  document.getElementById('modal-upgrade').classList.remove('open');
+};
+
+window.gatedView = function(viewId, feature) {
+  if (hasFeature(feature)) {
+    showView(viewId);
+  } else {
+    const labels = { rfq: 'RFQ Generator', contracts: 'Contract Tracking', risk_watch: 'Risk Watch' };
+    const benefits = {
+      rfq:        'Send quote requests to multiple suppliers at once and compare responses side by side.',
+      contracts:  'Track every contract renewal date and get 90-day alerts before auto-roll.',
+      risk_watch: 'Spot supplier risks before they become supply chain failures.'
+    };
+    showFeatureUpgrade(labels[feature] || feature, benefits[feature] || '');
+  }
+};
 
 // ── Feedback modal ────────────────────────────────────────
 window.openFeedbackModal = function() {

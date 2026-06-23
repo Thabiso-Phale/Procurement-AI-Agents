@@ -44,17 +44,17 @@
     <div class="nav-item" onclick="showView('suppliers')"><span class="nav-icon">🏢</span> My Suppliers</div>
     <div class="nav-section">Buy Something</div>
     <div class="nav-item" onclick="showView('requisitions')"><span class="nav-icon">📝</span> Raise a Request</div>
-    <div class="nav-item" onclick="showView('rfq')"><span class="nav-icon">📩</span> Get Quotes (RFQ)</div>
+    <div class="nav-item" id="nav-rfq" onclick="gatedView('rfq','rfq')" style="display:flex;align-items:center"><span class="nav-icon">📩</span> Get Quotes (RFQ)</div>
     <div class="nav-item" onclick="showView('price-comparison')"><span class="nav-icon">🤖</span> Compare Prices</div>
     <div class="nav-item" onclick="showView('purchase-orders')"><span class="nav-icon">📋</span> Purchase Orders</div>
     <div class="nav-section">Payments & Stock</div>
     <div class="nav-item" onclick="showView('invoices')"><span class="nav-icon">💳</span> Invoices & Payments</div>
     <div class="nav-item" onclick="showView('inventory')"><span class="nav-icon">📦</span> Inventory & Alerts</div>
-    <div class="nav-item" onclick="showView('contracts')"><span class="nav-icon">📄</span> Contracts</div>
+    <div class="nav-item" id="nav-contracts" onclick="gatedView('contracts','contracts')" style="display:flex;align-items:center"><span class="nav-icon">📄</span> Contracts</div>
     <div class="nav-section">Review</div>
     <div class="nav-item" onclick="showView('analytics')"><span class="nav-icon">📊</span> Spend Analytics</div>
     <div class="nav-item" onclick="showView('spend-alerts')"><span class="nav-icon">🔍</span> Spend Alerts</div>
-    <div class="nav-item" onclick="showView('risk-watch')"><span class="nav-icon">🛡️</span> Risk Watch</div>
+    <div class="nav-item" id="nav-risk-watch" onclick="gatedView('risk-watch','risk_watch')" style="display:flex;align-items:center"><span class="nav-icon">🛡️</span> Risk Watch</div>
     <div class="nav-item" onclick="showView('ai-assistant')"><span class="nav-icon">💬</span> AI Assistant</div>
     <div class="nav-section">App</div>
     <div class="nav-item" onclick="showView('pricing')"><span class="nav-icon">💰</span> Pricing & Plans</div>
@@ -2592,6 +2592,30 @@
     <div class="btn-row" style="margin-top:20px">
       <button class="btn btn-outline" onclick="closeFeedbackModal()">Cancel</button>
       <button class="btn btn-primary" onclick="submitFeedback()">✉️ Submit &amp; Send Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Upgrade modal ───────────────────────────────────── -->
+<div class="modal-overlay" id="modal-upgrade">
+  <div class="modal" style="max-width:440px;text-align:center">
+    <div style="font-size:40px;margin-bottom:12px">🔒</div>
+    <h3 id="modal-upgrade-title" style="font-size:18px;color:#0D2B5E;margin-bottom:10px"></h3>
+    <p id="modal-upgrade-msg" style="color:#475569;font-size:14px;line-height:1.6;margin-bottom:8px"></p>
+    <p id="modal-upgrade-detail" style="color:#64748B;font-size:13px;line-height:1.5;margin-bottom:24px"></p>
+    <div style="background:#F1F5F9;border-radius:10px;padding:14px;margin-bottom:20px;text-align:left">
+      <div style="font-size:12px;font-weight:700;color:#0D2B5E;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Grow Plan — $39/mo includes:</div>
+      <div style="font-size:13px;color:#334155;line-height:1.8">
+        ✓ 10 suppliers &nbsp;·&nbsp; Unlimited POs, Reqs &amp; Invoices<br>
+        ✓ RFQ Generator — multi-supplier quotes<br>
+        ✓ Contract tracking &amp; renewal alerts<br>
+        ✓ Risk Watch &amp; all 8 AI agents<br>
+        ✓ Branded PDF exports (no watermark)
+      </div>
+    </div>
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-outline" onclick="closeUpgradeModal()">Maybe later</button>
+      <button class="btn btn-primary" onclick="closeUpgradeModal();showView('pricing')">View Plans →</button>
     </div>
   </div>
 </div>

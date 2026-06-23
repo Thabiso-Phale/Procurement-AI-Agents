@@ -3,6 +3,7 @@
 // ============================================================
 
 import { getSettings, getReqData, setReqData, getPOData, setPOData } from '../store.js';
+import { checkRecordLimit } from '../features.js';
 import { toast } from '../utils.js';
 import { showView } from '../router.js';
 import { nextPONumber } from './po.js';
@@ -233,6 +234,7 @@ export function checkReqBudget() {
 
 export function submitRequisition() {
   if (!validateReq()) return;
+  if (!checkRecordLimit('req', getReqData().length)) return;
   const settings = getSettings();
   const reqData  = getReqData();
   const id     = nextReqNumber();
@@ -259,6 +261,7 @@ export function submitRequisition() {
 
 export function saveReqDraft() {
   if (!document.getElementById('req-item').value.trim()) { toast('Please describe the item first'); return; }
+  if (!checkRecordLimit('req', getReqData().length)) return;
   const reqData = getReqData();
   const id = nextReqNumber();
   reqData.push({

@@ -3,6 +3,7 @@
 // ============================================================
 
 import { getInventoryData, setInventoryData } from '../store.js';
+import { checkRecordLimit } from '../features.js';
 import { toast } from '../utils.js';
 import { showView } from '../router.js';
 
@@ -136,7 +137,12 @@ export function saveInventoryItem() {
     unitCost:     parseFloat((document.getElementById('inv-unit-cost') || {value:'0'}).value) || 0,
     lastOrdered:  new Date().toISOString().split('T')[0]
   };
-  if (idx >= 0) inventoryData[idx] = item; else inventoryData.push(item);
+  if (idx >= 0) {
+    inventoryData[idx] = item;
+  } else {
+    if (!checkRecordLimit('inventory', inventoryData.length)) return;
+    inventoryData.push(item);
+  }
   setInventoryData(inventoryData);
   toast('✅ ' + name + ' saved to inventory!');
   showView('inventory');
