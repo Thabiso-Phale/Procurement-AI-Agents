@@ -1,5 +1,5 @@
 {
-  "name": "procureai",
+  "name": "projectbuys",
   "version": "1.0.0",
   "description": "AI-powered procurement platform for SMEs",
   "main": "server.js",

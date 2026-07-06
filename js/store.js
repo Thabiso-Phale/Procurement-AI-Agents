@@ -103,7 +103,7 @@ export function save() {
     localStorage.setItem(SK.contracts,       JSON.stringify(_state.contractData));
     localStorage.setItem(SK.approvalHistory, JSON.stringify(_state.approvalHistory));
   } catch (e) {
-    console.warn('ProcureAI: storage write failed', e);
+    console.warn('ProjectBuys: storage write failed', e);
   }
 }
 
@@ -120,7 +120,7 @@ export function load() {
     const ctr = localStorage.getItem(SK.contracts);   if (ctr)  _state.contractData     = JSON.parse(ctr);
     const ah  = localStorage.getItem(SK.approvalHistory); if (ah) _state.approvalHistory = JSON.parse(ah);
   } catch (e) {
-    console.warn('ProcureAI: storage load failed', e);
+    console.warn('ProjectBuys: storage load failed', e);
   }
 }
 

@@ -60,7 +60,7 @@ export function applySettings() {
   if (logoWrap) logoWrap.style.display = settings.companyLogo ? 'block' : 'none';
   // Company name in topbar
   const companyEl = document.getElementById('company-name-display');
-  if (companyEl) companyEl.textContent = settings.companyName || 'ProcureAI';
+  if (companyEl) companyEl.textContent = settings.companyName || 'ProjectBuys';
   // Currency selects
   populateCurrencySelects();
 }
@@ -198,7 +198,7 @@ export function exportFullBackup() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href = url;
-  a.download = 'procureai_backup_' + new Date().toISOString().split('T')[0] + '.json';
+  a.download = 'projectbuys_backup_' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
   URL.revokeObjectURL(url);
   toast('💾 Full backup exported!');
@@ -226,7 +226,7 @@ export function importBackup(evt) {
       toast('✅ Backup restored successfully! Refreshing data...');
       setTimeout(() => window.location.reload(), 800);
     } catch(err) {
-      toast('✕ Invalid backup file. Please use a ProcureAI backup JSON.');
+      toast('✕ Invalid backup file. Please use a ProjectBuys backup JSON.');
     }
   };
   reader.readAsText(file);

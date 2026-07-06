@@ -44,7 +44,7 @@ export function wizardFinish() {
   const overlay = document.getElementById('wizard-overlay');
   if (overlay) overlay.style.display = 'none';
   applySettings();
-  toast('🎉 Setup complete! Welcome to ProcureAI.');
+  toast('🎉 Setup complete! Welcome to ProjectBuys.');
   showView('dashboard');
 }
 

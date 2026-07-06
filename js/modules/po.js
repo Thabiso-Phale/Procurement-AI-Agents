@@ -411,7 +411,7 @@ export function exportPOs() {
     {label:'Approver',key:'approver'}, {label:'Notes',key:'notes'}
   ];
   const now = new Date().toISOString().split('T')[0];
-  exportCSV(getPOData(), cols, 'ProcureAI_Purchase_Orders_' + now + '.csv');
+  exportCSV(getPOData(), cols, 'ProjectBuys_Purchase_Orders_' + now + '.csv');
 }
 
 // ── PDF generation (2-page A4 with T&Cs) ─────────────────
@@ -448,7 +448,7 @@ export function generatePOPDF(id) {
   const watermarkCSS = isFreePlan
     ? '.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-45deg);font-size:52pt;font-weight:900;color:rgba(0,0,0,0.055);white-space:nowrap;pointer-events:none;z-index:9999;letter-spacing:4px}'
     : '';
-  const watermarkHTML = isFreePlan ? '<div class="wm">ProcureAI Free</div>' : '';
+  const watermarkHTML = isFreePlan ? '<div class="wm">ProjectBuys Free</div>' : '';
 
   const html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">'
     + '<title>' + p.id + ' — Purchase Order</title>\n<style>\n'
@@ -531,7 +531,7 @@ export function generatePOPDF(id) {
     + '<div class="pg-footer"><strong>' + company + '</strong>'
     + (compPhone ? ' &nbsp;·&nbsp; ' + compPhone : '') + (compEmail ? ' &nbsp;·&nbsp; ' + compEmail : '')
     + (compWebsite ? ' &nbsp;·&nbsp; ' + compWebsite : '') + (compReg ? ' &nbsp;·&nbsp; Reg/VAT: ' + compReg : '')
-    + '<br>' + p.id + ' &nbsp;·&nbsp; Generated ' + new Date().toLocaleDateString() + ' via ProcureAI'
+    + '<br>' + p.id + ' &nbsp;·&nbsp; Generated ' + new Date().toLocaleDateString() + ' via ProjectBuys'
     + '<br><em>This purchase order is subject to the Standard Terms and Conditions of Purchase printed overleaf.</em>'
     + '</div></div>'
     + '<div class="page page2">'

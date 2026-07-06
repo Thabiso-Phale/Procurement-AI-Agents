@@ -1,6 +1,6 @@
 // ============================================================
 // MAIN ENTRY POINT
-// ProcureAI — ES6 module orchestrator
+// ProjectBuys — ES6 module orchestrator
 // ============================================================
 
 // ── Store ─────────────────────────────────────────────────
@@ -228,8 +228,8 @@ window.submitFeedback = function() {
   localStorage.setItem('procureai_feedback', JSON.stringify(all));
   const cats = checked.join(', ');
   const body = `Feedback areas: ${cats}${otherText ? '\n\nAdditional details:\n' + otherText : ''}\n\n----\nBeta user feedback`;
-  const subject = `ProcureAI Feedback: ${cats}`;
-  window.location.href = `mailto:support@procure-flow.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const subject = `ProjectBuys Feedback: ${cats}`;
+  window.location.href = `mailto:support@projectbuys.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   window.closeFeedbackModal();
 };
 
