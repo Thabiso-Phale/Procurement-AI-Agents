@@ -156,6 +156,17 @@ const server = http.createServer(function(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
+  // ── Redirect legacy domain page loads to the new brand domain ─
+  // (API/webhook POSTs are left untouched so in-flight sessions and
+  // third-party webhook configs pointing at the old domain don't break)
+  var reqHost = (req.headers.host || '').toLowerCase().split(':')[0];
+  var LEGACY_HOSTS = ['app.procure-flow.net', 'www.procure-flow.net', 'procure-flow.net'];
+  if ((req.method === 'GET' || req.method === 'HEAD') && LEGACY_HOSTS.indexOf(reqHost) !== -1) {
+    res.writeHead(301, { 'Location': 'https://app.projectbuys.com' + req.url });
+    res.end();
+    return;
+  }
+
   // ── ADMIN PANEL  GET /admin ──────────────────────────────────
   if (req.method === 'GET' && req.url === '/admin') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
