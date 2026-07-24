@@ -320,10 +320,10 @@ var RESEND_FROM       = (process.env.RESEND_FROM || 'ProjectBuys <hello@projectb
 
 // Variant ID → plan mapping
 var LS_VARIANT_PLANS = {
-  '1733973': 'grow',  // Grow Monthly  $39/mo
-  '1734044': 'grow',  // Grow Annual   $390/yr
-  '1734050': 'team',  // Team Monthly  $89/mo
-  '1734064': 'team'   // Team Annual   $890/yr
+  '1941539': 'grow',  // Grow Monthly  $39/mo
+  '1941505': 'grow',  // Grow Annual   $390/yr
+  '1941567': 'team',  // Team Monthly  $89/mo
+  '1941555': 'team'   // Team Annual   $890/yr
 };
 
 function sendLicenseEmail(toEmail, licenseKey, plan, cb) {
